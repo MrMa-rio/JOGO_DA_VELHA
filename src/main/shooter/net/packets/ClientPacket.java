@@ -9,5 +9,5 @@ import java.io.Serializable;
  * (I feel like my grammar is incorrect.)
  */
 public class ClientPacket implements Serializable {
-    private static final long serialVersionUID = -8731243900388342502L;
+    //private static final long serialVersionUID = -8731243900388342502L;
 }

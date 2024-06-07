@@ -27,12 +27,10 @@ public class Client implements Runnable {
         socket = new Socket(ipAddress, port);
         inputStream = new ObjectInputStream(socket.getInputStream());
         outputStream = new ObjectOutputStream(socket.getOutputStream());
-
-
         initialServerCommunication();
     }
 
-    @SuppressWarnings("unchecked")
+    // Server se comunicando com o Cliente
     private void initialServerCommunication() {
         try {
 
@@ -109,6 +107,6 @@ public class Client implements Runnable {
 
     }
     public static void main(final String[] args) throws IOException {
-        new Client("192.168.3.18", 1234).run();
+        new Client("172.16.232.203", 1234).run();
     }
 }

@@ -14,8 +14,6 @@ public class Server implements Runnable {
     private final int MILLISECONDS_PER_TICK = 1000000000 / TICKS_PER_SECOND;
 
     public final static int DEFAULT_PORT_NUMBER = 1234;
-
-
     private ServerSocket serverSocket;
     private final ArrayList<ClientHandler> clientHandlers;
 
@@ -46,7 +44,8 @@ public class Server implements Runnable {
                 clientHandlers.add(clientHandler);
                 new Thread(clientHandler).start();
             } catch (final IOException e) {
-                e.printStackTrace();
+                System.out.println(e.getMessage());
+                break;
             }
         }
     }
@@ -69,8 +68,9 @@ public class Server implements Runnable {
             System.out.println("Processando Pacotes processPacket");
             try {
                 System.out.println(packet.toString());
-               System.out.println(clientHandler.getClientId());
+                System.out.println(clientHandler.getClientId());
                 clientHandler.sendUpdate("TESTE");
+                Thread.sleep(10000);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

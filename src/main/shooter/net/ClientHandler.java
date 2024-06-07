@@ -34,6 +34,7 @@ public class ClientHandler implements Runnable {
         initialClientCommunication();
     }
 
+    //O servidor irá mandar mensagem para o cliente
     private void initialClientCommunication() {
         try {
             outputStream.writeObject(clientId);
@@ -74,6 +75,7 @@ public class ClientHandler implements Runnable {
             outputStream.reset();
         } catch (final IOException e) {
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 

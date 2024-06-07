@@ -6,10 +6,8 @@ import src.main.shooter.net.Client;
 public class ClientGame {
     private final String playerId;
     private final Client client;
-
     private final SendMessage SendMessage;
 
-    //private TreeMap<Integer, Entity> entities; // O que e uma TreeMap
 
     public ClientGame(final Client client, final String clientId) {
         this.client = client;
