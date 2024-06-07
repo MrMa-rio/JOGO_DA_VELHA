@@ -36,7 +36,7 @@ public class ClientHandler implements Runnable {
 
     private void initialClientCommunication() {
         try {
-            outputStream.writeChars(clientId);
+            outputStream.writeObject(clientId);
             server.sendUpdates(this);
         } catch (final IOException e) {
             e.printStackTrace();
@@ -46,25 +46,25 @@ public class ClientHandler implements Runnable {
     @Override
     public void run() {
         isRunning = true;
-        startRecieveMessageLoop();
+        startReceiveMessageLoop();
     }
 
     // client to server
-    private void startRecieveMessageLoop() {
+    private void startReceiveMessageLoop() {
         while (isRunning) {
             try {
                 final ClientPacket packet = (ClientPacket) inputStream.readObject();
                 server.processPacket(this, packet);
-            } catch (final IOException e) {
-                e.printStackTrace();
             } catch (final ClassNotFoundException e) {
                 e.printStackTrace();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }
     }
 
     // server to client
-    public void sendUpdate(String update) {
+    public void sendUpdate(String update) { //aqui poderia ser enviado o stateGame
         if (!isRunning) {
             return;
         }

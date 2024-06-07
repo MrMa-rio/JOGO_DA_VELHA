@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.net.SocketException;
 
 import src.main.shooter.game.ClientGame;
-import src.main.shooter.net.packets.ActionPacket;
+import src.main.shooter.game.action.SendMessage;
+import src.main.shooter.net.packets.SendMessagePacket;
 import src.main.shooter.net.packets.ClientPacket;
 import src.main.shooter.net.packets.DisconnectPacket;
 
@@ -35,12 +35,18 @@ public class Client implements Runnable {
     @SuppressWarnings("unchecked")
     private void initialServerCommunication() {
         try {
-            final int clientId = inputStream.readInt();
-            game = new ClientGame(this, clientId);
 
+            final Object object = inputStream.readObject();
+            var teste = object;
+            game = new ClientGame(this, inputStream.toString());
+            System.out.println(teste.toString());
             System.out.println("FINALIZA A COMUNICACAO INICIAL");
-        } catch (final IOException e) {
+        } catch (final RuntimeException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -51,23 +57,18 @@ public class Client implements Runnable {
         new Thread(() -> startGameloop()).start();
     }
 
-    @SuppressWarnings("unchecked") // if type is bad, then it should throw an error anyways
     private void startReadAndWriteLoop() {
         while (isRunning) {
             try {
                 // read
-                var teste = inputStream.readObject();
-                System.out.println(teste);
+               Object teste = inputStream.readObject();
+               String teste2 = (String) teste;
+               System.out.println(teste2);
 
                 // write
-                sendPacket(new ActionPacket(game));
-                game.getActionSet().getInstantActions().clear();
-            } catch (final SocketException e) {
-                break;
-            } catch (final IOException e) {
-                e.printStackTrace();
-            } catch (final ClassNotFoundException e) {
-                e.printStackTrace();
+                sendPacket(new SendMessagePacket(new SendMessage("ESCREVENDO ALGUMA COISA PARA O SERVIDOR")));
+            }catch ( Exception e) {
+                throw new RuntimeException(e);
             }
         }
     }

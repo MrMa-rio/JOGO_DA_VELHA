@@ -1,31 +1,33 @@
 package src.main.shooter.game;
 
-import java.util.TreeMap;
-
-import src.main.shooter.game.action.ActionSet;
+import src.main.shooter.game.action.SendMessage;
 import src.main.shooter.net.Client;
 
 public class ClientGame {
-    private final int playerId;
+    private final String playerId;
     private final Client client;
 
-    private final ActionSet actionSet;
+    private final SendMessage SendMessage;
 
     //private TreeMap<Integer, Entity> entities; // O que e uma TreeMap
 
-    public ClientGame(final Client client, final int clientId) {
+    public ClientGame(final Client client, final String clientId) {
         this.client = client;
         playerId = clientId;
-        actionSet = new ActionSet();
+        SendMessage = new SendMessage("AQUI TEREMOS TESTE DE MENSAGEM");
     }
 
-    public ActionSet getActionSet() {
-        return actionSet;
+    public SendMessage getSendMessage() {
+        return SendMessage;
     }
 
 
     public void tick() {
-
+        try {
+            Thread.sleep(12000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         client.disconnect(); //TALVEZ GERE UNS BUGS MALUCO
     }
 }

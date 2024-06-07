@@ -16,27 +16,14 @@ import src.main.shooter.utils.ArraySet;
  * @see src.main.shooter.net.Server
  * @see java.util.ArrayList
  */
-public class ActionSet implements Serializable {
+public class SendMessage implements Serializable {
     private static final long serialVersionUID = -4852037557772448218L;
 
-    private final ArrayList<Action> instantActions;
-    private final ArraySet<Action> longActions;
+    private String message;
 
-    public ActionSet() {
-        instantActions = new ArrayList<Action>();
-        longActions = new ArraySet<Action>();
+    public SendMessage(String message) {
+        this.message = message;
     }
 
-    public ArrayList<Action> getInstantActions() {
-        return instantActions;
-    }
 
-    public ArraySet<Action> getLongActions() {
-        return longActions;
-    }
-
-    @Override
-    public String toString() {
-        return "ActionSet [instantActions=" + instantActions + ", longActions=" + longActions + "]";
-    }
 }
