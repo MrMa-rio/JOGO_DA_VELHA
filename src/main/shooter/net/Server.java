@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.UUID;
 
-import src.main.shooter.game.ServerGame;
 import src.main.shooter.net.packets.ActionPacket;
 import src.main.shooter.net.packets.DisconnectPacket;
 import src.main.shooter.net.packets.ClientPacket;
@@ -88,12 +88,12 @@ public class Server implements Runnable {
 
     public final static int DEFAULT_PORT_NUMBER = 1234;
 
-    private final ServerGame game;
+
     private ServerSocket serverSocket;
     private final ArrayList<ClientHandler> clientHandlers;
 
-    public Server(final ServerGame game, final int port) {
-        this.game = game;
+    public Server(final int port) {
+
         try {
             this.serverSocket = new ServerSocket(port);
         } catch (final IOException e) {
@@ -111,11 +111,11 @@ public class Server implements Runnable {
     private void startAcceptClientsLoop() {
         System.out.println("Accepting Clients.");
         while (true) {
-            System.out.println("Waiting for new client.");
+            System.out.println("AGUARDANDO NOVOS JOGADORES");
             try {
                 final Socket socket = serverSocket.accept();
-                System.out.println("A new client has connected.");
-                final ClientHandler clientHandler = new ClientHandler(this, socket, game.spawnPlayerEntity());
+                System.out.println("UM JOGADOR SE CONECTOU");
+                final ClientHandler clientHandler = new ClientHandler(this, socket, UUID.randomUUID().toString());
                 clientHandlers.add(clientHandler);
                 new Thread(clientHandler).start();
             } catch (final IOException e) {
@@ -132,21 +132,17 @@ public class Server implements Runnable {
             if (System.nanoTime() < whenShouldNextTickRun) {
                 continue;
             }
-
-            game.tick();
-
             sendUpdatesToAll();
-
             lastTickTime = System.nanoTime();
         }
     }
 
     public void processPacket(final ClientHandler clientHandler, final ClientPacket packet) {
         if (packet instanceof final ActionPacket actionPacket) {
-            game.updateActionSet(clientHandler.getEntityId(), actionPacket.actionSet);
+            System.out.println("ALGO ENVIADO PELO processPacket");
         } else if (packet instanceof final DisconnectPacket disconnectPacket) {
             clientHandler.disconnect();
-            game.removeEntity(clientHandler.getEntityId());
+            System.out.println("REMOVE DADOS DO JOGADOR");
             clientHandlers.remove(clientHandler);
         }
     }
@@ -160,7 +156,7 @@ public class Server implements Runnable {
 
     // server to one client
     public void sendUpdates(final ClientHandler clientHandler) {
-        clientHandler.sendUpdate(game.getEntities());
+        clientHandler.sendUpdate("Teste no metodo 'sendUpdates' ");
     }
 
     public void closeServer() {
@@ -178,6 +174,6 @@ public class Server implements Runnable {
     }
 
     public static void main(final String[] args) {
-        new Server(new ServerGame(), Server.DEFAULT_PORT_NUMBER).run();
+        new Server(Server.DEFAULT_PORT_NUMBER).run();
     }
 }

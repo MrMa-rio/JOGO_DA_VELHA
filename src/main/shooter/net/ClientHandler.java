@@ -4,27 +4,25 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.TreeMap;
 
-import src.main.shooter.game.ServerGame.Entity;
 import src.main.shooter.net.packets.ClientPacket;
 
 public class ClientHandler implements Runnable {
     private boolean isRunning;
-    private final int entityId;
+    private final String clientId;
     private final Server server;
     private final Socket socket;
     private ObjectOutputStream outputStream;
     private ObjectInputStream inputStream;
 
-    public int getEntityId() {
-        return entityId;
+    public String getClientId() {
+        return clientId;
     }
 
-    public ClientHandler(final Server server, final Socket socket, final int id) {
+    public ClientHandler(final Server server, final Socket socket, final String id) {
         this.server = server;
         this.socket = socket;
-        this.entityId = id;
+        this.clientId = id;
 
         try {
             this.outputStream = new ObjectOutputStream(socket.getOutputStream());
@@ -38,7 +36,7 @@ public class ClientHandler implements Runnable {
 
     private void initialClientCommunication() {
         try {
-            outputStream.writeInt(entityId);
+            outputStream.writeChars(clientId);
             server.sendUpdates(this);
         } catch (final IOException e) {
             e.printStackTrace();
@@ -66,7 +64,7 @@ public class ClientHandler implements Runnable {
     }
 
     // server to client
-    public void sendUpdate(final TreeMap<Integer, Entity> update) {
+    public void sendUpdate(String update) {
         if (!isRunning) {
             return;
         }
@@ -80,7 +78,7 @@ public class ClientHandler implements Runnable {
     }
 
     public void disconnect() {
-        System.out.println("A client has disconnected.");
+        System.out.println("UM JOGADOR SE DESCONECTOU");
 
         isRunning = false;
 

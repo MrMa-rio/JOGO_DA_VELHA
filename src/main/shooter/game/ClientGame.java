@@ -2,9 +2,7 @@ package src.main.shooter.game;
 
 import java.util.TreeMap;
 
-import src.main.shooter.game.ServerGame.Entity;
 import src.main.shooter.game.action.ActionSet;
-import src.main.shooter.game.entities.PlayerEntity;
 import src.main.shooter.net.Client;
 
 public class ClientGame {
@@ -13,7 +11,7 @@ public class ClientGame {
 
     private final ActionSet actionSet;
 
-    private TreeMap<Integer, Entity> entities;
+    //private TreeMap<Integer, Entity> entities; // O que e uma TreeMap
 
     public ClientGame(final Client client, final int clientId) {
         this.client = client;
@@ -25,30 +23,9 @@ public class ClientGame {
         return actionSet;
     }
 
-    @Deprecated
-    public PlayerEntity getPlayerEntity() {
-        return (PlayerEntity) entities.get(playerId);
-    }
-
-    public void addEntity(final Entity entity) {
-        entities.put(entity.getId(), entity);
-    }
-
-    public TreeMap<Integer, Entity> getEntities() {
-        return entities;
-    }
-
-    public void processEntityList(final TreeMap<Integer, Entity> incomingEntityList) {
-        entities = incomingEntityList;
-    }
 
     public void tick() {
-        // TODO: game logic
-        if (!getEntities().containsKey(playerId)) {
-            // TODO: find way to end all threads without exit()
-            // make a method in client like client.handleDeath() or maybe simplify
-            // client.disconnect()
-            client.disconnect();
-        }
+
+        client.disconnect(); //TALVEZ GERE UNS BUGS MALUCO
     }
 }
