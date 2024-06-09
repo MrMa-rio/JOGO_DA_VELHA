@@ -6,8 +6,10 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import src.main.shooter.game.action.SendMessage;
 import src.main.shooter.net.packets.DisconnectPacket;
 import src.main.shooter.net.packets.ClientPacket;
+import src.main.shooter.net.packets.SendMessagePacket;
 
 public class Server implements Runnable {
     private final int TICKS_PER_SECOND = 20;
@@ -15,7 +17,7 @@ public class Server implements Runnable {
 
     public final static int DEFAULT_PORT_NUMBER = 1234;
     private ServerSocket serverSocket;
-    private final ArrayList<ClientHandler> clientHandlers;
+    private final ArrayList<PlayerHandler> playerHandlers;
 
     public Server(final int port) {
 
@@ -24,7 +26,7 @@ public class Server implements Runnable {
         } catch (final IOException e) {
             e.printStackTrace();
         }
-        clientHandlers = new ArrayList<ClientHandler>();
+        playerHandlers = new ArrayList<PlayerHandler>();
     }
 
     @Override
@@ -34,15 +36,15 @@ public class Server implements Runnable {
     }
 
     private void startAcceptClientsLoop() {
-        System.out.println("Accepting Clients.");
+        System.out.println("AGUARDANDO NOVOS JOGADORES");
         while (true) {
-            System.out.println("AGUARDANDO NOVOS JOGADORES");
             try {
                 final Socket socket = serverSocket.accept();
                 System.out.println("UM JOGADOR SE CONECTOU");
-                final ClientHandler clientHandler = new ClientHandler(this, socket, UUID.randomUUID().toString());
-                clientHandlers.add(clientHandler);
-                new Thread(clientHandler).start();
+                final PlayerHandler playerHandler = new PlayerHandler(this, socket, UUID.randomUUID().toString());
+                playerHandlers.add(playerHandler);
+                new Thread(playerHandler).start();
+                sendUpdateForOthers(playerHandler, new SendMessagePacket(new SendMessage("UM NOVO PLAYER SE CONECTOU")));
             } catch (final IOException e) {
                 System.out.println(e.getMessage());
                 break;
@@ -63,34 +65,58 @@ public class Server implements Runnable {
         }
     }
 
-    public void processPacket(final ClientHandler clientHandler, final ClientPacket packet) {
-        if (packet instanceof final Object teste) {
-            System.out.println("Processando Pacotes processPacket");
+    public void processPacket(final PlayerHandler playerHandler, final ClientPacket packet) {
+        System.out.println("Processando pacote...");
+
+        if (packet instanceof final SendMessagePacket sendMessagePacket) {
             try {
-                System.out.println(packet.toString());
-                System.out.println(clientHandler.getClientId());
-                clientHandler.sendUpdate("TESTE");
-                Thread.sleep(10000);
+                String message = sendMessagePacket.SendMessage.getMessage();
+                System.out.println("O player "+ playerHandler.getPlayerId() + "\n" + "enviou a seguinte mensagem: " + message);
+                sendUpdateForOthers(playerHandler,sendMessagePacket);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-        } else if (packet instanceof final DisconnectPacket disconnectPacket) {
-            clientHandler.disconnect();
-            System.out.println("REMOVE DADOS DO JOGADOR");
-            clientHandlers.remove(clientHandler);
         }
+//        else if(packet instanceof final SendPositionPacket sendPositionPacket){
+//
+//            try {
+//                String message = sendPositionPacket.SendMessage.getMessage();
+//                System.out.println("O player "+ playerHandler.getClientId() + "\n" + "enviou a seguinte mensagem: " + message);
+//                sendUpdateForOthers(playerHandler, sendPositionPacket);
+//            } catch (Exception e) {
+//                throw new RuntimeException(e);
+//            }
+//        }
+        else if (packet instanceof final DisconnectPacket disconnectPacket) {
+            playerHandler.disconnect();
+            System.out.println("REMOVE DADOS DO JOGADOR");
+            playerHandlers.remove(playerHandler);
+            sendUpdateForOthers(playerHandler, disconnectPacket);
+        }
+        //sendUpdatesToAll(packet);
     }
 
     // server to all client
     private void sendUpdatesToAll() {
-        for (final ClientHandler clientHandler : clientHandlers) {
-            sendUpdates(clientHandler);
+        for (final PlayerHandler playerHandler : playerHandlers) {
+            sendUpdates(playerHandler);
         }
     }
 
     // server to one client
-    public void sendUpdates(final ClientHandler clientHandler) {
-        clientHandler.sendUpdate("Teste no metodo 'sendUpdates' ");
+    public void sendUpdates(final PlayerHandler playerHandler, ClientPacket packet) {
+        playerHandler.sendUpdate(packet);
+    }
+    public void sendUpdates(final PlayerHandler playerHandler) {
+        playerHandler.sendUpdate(new ClientPacket());
+    }
+
+    public void sendUpdateForOthers(PlayerHandler playerHandler, ClientPacket packet){
+        for (final PlayerHandler otherPlayerHandler : playerHandlers) {
+            if(playerHandler != otherPlayerHandler){
+                sendUpdates(otherPlayerHandler, packet);
+            }
+        }
     }
 
     public void closeServer() {

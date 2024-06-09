@@ -26,4 +26,7 @@ public class SendMessage implements Serializable {
     }
 
 
+    public String getMessage() {
+        return message;
+    }
 }

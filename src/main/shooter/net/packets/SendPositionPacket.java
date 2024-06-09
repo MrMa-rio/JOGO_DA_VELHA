@@ -1,13 +1,12 @@
 package src.main.shooter.net.packets;
 
-import src.main.shooter.game.ClientGame;
 import src.main.shooter.game.action.SendMessage;
 
-public class SendMessagePacket extends ClientPacket {
+public class SendPositionPacket extends ClientPacket {
     public static final long serialVersionUID = -710902470934092114L;
     public final SendMessage SendMessage;
 
-    public SendMessagePacket(SendMessage message) {
+    public SendPositionPacket(SendMessage message) {
         this.SendMessage = message;
     }
 }

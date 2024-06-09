@@ -6,26 +6,22 @@ import src.main.shooter.net.Client;
 public class ClientGame {
     private final String playerId;
     private final Client client;
-    private final SendMessage SendMessage;
+    //private final SendMessage SendMessage;
 
 
     public ClientGame(final Client client, final String clientId) {
         this.client = client;
         playerId = clientId;
-        SendMessage = new SendMessage("AQUI TEREMOS TESTE DE MENSAGEM");
+        //SendMessage = new SendMessage("AQUI TEREMOS TESTE DE MENSAGEM");
     }
 
-    public SendMessage getSendMessage() {
-        return SendMessage;
-    }
+//    public SendMessage getSendMessage() {
+//        return SendMessage;
+//    }
 
 
     public void tick() {
-        try {
-            Thread.sleep(12000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        client.disconnect(); //TALVEZ GERE UNS BUGS MALUCO
+
+        //client.disconnect(); //TALVEZ GERE UNS BUGS MALUCO //DE FATO GEROU ALGUNS BUGS LOUCO
     }
 }
