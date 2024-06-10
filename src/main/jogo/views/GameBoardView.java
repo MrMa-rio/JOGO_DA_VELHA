@@ -1,5 +1,7 @@
 package src.main.jogo.views;
 
+import src.main.jogo.models.GameBoard;
+
 public class GameBoardView {
     public void showGameBoard(String[][] board) {
         for (String[] strings : board) {
@@ -10,8 +12,8 @@ public class GameBoardView {
         }
     }
 
-    public void showEmptyBoard(String[][] gameBoard){
-        for (int i = 0; i < gameBoard.length; i++){
+    public void showEmptyBoard(GameBoard gameBoard){
+        for (int i = 0; i < gameBoard.getGameBoard().length; i++){
             if(i == 0){
                 System.out.printf(String.format("""
                   %s  |  %s  |  %s

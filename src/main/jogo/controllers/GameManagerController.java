@@ -1,13 +1,14 @@
 package src.main.jogo.controllers;
 
 import src.main.jogo.net.Client;
+import src.main.jogo.services.GameModeOnlineService;
 import src.main.jogo.views.GameBoardView;
 import src.main.jogo.views.GameManagerView;
 
 public class GameManagerController {
     private GameManagerView gameManagerView;
     GameBoardView gameBoardView = new GameBoardView();
-
+    GameModeOnlineService gameModeOnlineService;
     public GameManagerController(GameManagerView gameManagerView) {
         this.gameManagerView = gameManagerView;
     }
@@ -20,7 +21,7 @@ public class GameManagerController {
                 break;
             case 2:
                 System.out.println("Entrando em novo jogo online...");
-                new Client("172.16.232.203", 1234).run();
+
                 break;
             case 3:
                 System.out.println("Entrando em uma sala...");

@@ -6,19 +6,16 @@ import src.main.jogo.views.GameBoardView;
 public class GameBoardService {
     private GameBoard ticTacToeBoard;
     private GameBoardView gameBoardView;
-
     public GameBoardService(){
         this.gameBoardView = new GameBoardView();
+        this.ticTacToeBoard = new GameBoard();
     }
-
     public GameBoard getTicTacToeBoard() {
         return ticTacToeBoard;
     }
-
     public void setTicTacToeBoard(GameBoard ticTacToeBoard) {
         this.ticTacToeBoard = ticTacToeBoard;
     }
-
     public GameBoard create(){
         int counter = 0;
         for(int i = 0; i < ticTacToeBoard.getGameBoard().length; i++){
@@ -28,7 +25,7 @@ public class GameBoardService {
         }
         return getTicTacToeBoard();
     }
-    void showEmptyBoard(String[][] gameBoard) {
+    void showEmptyBoard(GameBoard gameBoard) {
         gameBoardView.showEmptyBoard(gameBoard);
     }
 }
