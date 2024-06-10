@@ -19,7 +19,6 @@ public class Server implements Runnable {
     private final ArrayList<ClientHandler> clientHandlers;
 
     public Server(final int port) {
-
         try {
             this.serverSocket = new ServerSocket(port);
         } catch (final IOException e) {
@@ -30,8 +29,8 @@ public class Server implements Runnable {
 
     @Override
     public void run() {
-        new Thread(() -> startAcceptClientsLoop()).start();
-        new Thread(() -> startGameloop()).start();
+        new Thread(this::startAcceptClientsLoop).start();
+        new Thread(this::startGameloop).start();
     }
 
     private void startAcceptClientsLoop() {
@@ -42,7 +41,7 @@ public class Server implements Runnable {
                 System.out.println("UM JOGADOR SE CONECTOU");
                 final ClientHandler clientHandler = new ClientHandler(this, socket, UUID.randomUUID().toString());
                 clientHandlers.add(clientHandler);
-                new Thread(clientHandler).start();
+                new Thread(clientHandler).start(); //AJUDA
                 sendUpdateForOthers(clientHandler, new SendMessagePacket("UM NOVO PLAYER SE CONECTOU"));
             } catch (final IOException e) {
                 System.out.println(e.getMessage());
@@ -52,15 +51,14 @@ public class Server implements Runnable {
     }
 
     private void startGameloop() {
-        long lastTickTime = System.nanoTime();
-
+      long lastTickTime = System.nanoTime();
         while (true) {
             final long whenShouldNextTickRun = lastTickTime + MILLISECONDS_PER_TICK;
             if (System.nanoTime() < whenShouldNextTickRun) {
                 continue;
             }
             sendUpdatesToAll();
-            lastTickTime = System.nanoTime();
+           lastTickTime = System.nanoTime();
         }
     }
 

@@ -32,7 +32,7 @@ public class ClientHandler implements Runnable {
             e.printStackTrace();
         }
 
-        initialClientCommunication();
+        //initialClientCommunication();
     }
 
     //O servidor irá mandar mensagem para o cliente

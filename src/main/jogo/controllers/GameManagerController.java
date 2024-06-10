@@ -20,13 +20,14 @@ public class GameManagerController {
                 break;
             case 2:
                 System.out.println("Entrando em novo jogo online...");
-                new Client("192.168.3.18", 1234).run();
+                new Client("172.16.232.203", 1234).run();
                 break;
             case 3:
                 System.out.println("Entrando em uma sala...");
                 break;
             case 0:
                 System.out.println("Saindo do jogo...");
+
                 break;
             default:
                 System.out.println("Opçao Invalida!");

@@ -16,6 +16,8 @@ public class Client implements Runnable {
     private final ObjectInputStream inputStream;
     private final ObjectOutputStream outputStream;
     private final Scanner scanner = new Scanner(System.in);
+    private Thread startRead;
+    private Thread startWrite;
 
     public Client( final String ipAddress, final int port) {
         try {
@@ -31,8 +33,10 @@ public class Client implements Runnable {
     @Override
     public void run() {
         isConnected = true;
-        new Thread(this::startReadLoop).start();
-        new Thread(this::startWriteLoop).start();
+        startRead = new Thread(this::startReadLoop);
+        startWrite = new Thread(this::startWriteLoop);
+        startRead.start();
+        startWrite.start();
     }
 
     private void startWriteLoop() {
@@ -87,6 +91,8 @@ public class Client implements Runnable {
             socket.close();
             inputStream.close();
             outputStream.close();
+            startRead.interrupt();
+            startWrite.interrupt();
         } catch (final IOException e) {
             e.printStackTrace();
         }
