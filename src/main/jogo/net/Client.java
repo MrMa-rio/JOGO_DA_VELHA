@@ -17,10 +17,15 @@ public class Client implements Runnable {
     private final ObjectOutputStream outputStream;
     private final Scanner scanner = new Scanner(System.in);
 
-    public Client( final String ipAddress, final int port) throws IOException {
-        socket = new Socket(ipAddress, port);
-        inputStream = new ObjectInputStream(socket.getInputStream());
-        outputStream = new ObjectOutputStream(socket.getOutputStream());
+    public Client( final String ipAddress, final int port) {
+        try {
+            socket = new Socket(ipAddress, port);
+            inputStream = new ObjectInputStream(socket.getInputStream());
+            outputStream = new ObjectOutputStream(socket.getOutputStream());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     @Override
@@ -86,7 +91,7 @@ public class Client implements Runnable {
             e.printStackTrace();
         }
     }
-    public static void main(final String[] args) throws IOException {
-        new Client("192.168.3.18", 1234).run();
-    }
+//    public static void main(final String[] args) throws IOException {
+//        new Client().run();
+//    }
 }
