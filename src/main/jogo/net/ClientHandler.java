@@ -7,11 +7,12 @@ import java.net.Socket;
 
 import src.main.jogo.net.packets.ClientPacket;
 import src.main.jogo.net.packets.DisconnectPacket;
+import src.main.jogo.net.packets.SendClientPacket;
 import src.main.jogo.net.packets.SendMessagePacket;
 
 public class ClientHandler implements Runnable {
     private boolean isConnected;
-    private final String clientId;
+    private String clientId;
     private final Server server;
     private final Socket socket;
     private ObjectOutputStream outputStream;
@@ -20,10 +21,10 @@ public class ClientHandler implements Runnable {
         return clientId;
     }
 
-    public ClientHandler(final Server server, final Socket socket, final String id) {
+    public ClientHandler(final Server server, final Socket socket) {
         this.server = server;
         this.socket = socket;
-        this.clientId = id;
+
 
         try {
             this.outputStream = new ObjectOutputStream(socket.getOutputStream());
@@ -32,15 +33,18 @@ public class ClientHandler implements Runnable {
             e.printStackTrace();
         }
 
-        //initialClientCommunication();
+        initialClientCommunication();
     }
 
     //O servidor irá mandar mensagem para o cliente
     private void initialClientCommunication() {
         try {
-            outputStream.writeObject(new SendMessagePacket(clientId));
+            SendClientPacket sendClientPacket = (SendClientPacket) inputStream.readObject();
+            this.clientId = sendClientPacket.getClientId();
         } catch (final IOException e) {
             e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 

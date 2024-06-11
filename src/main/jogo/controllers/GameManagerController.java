@@ -8,7 +8,7 @@ import src.main.jogo.views.GameManagerView;
 public class GameManagerController {
     private GameManagerView gameManagerView;
     GameBoardView gameBoardView = new GameBoardView();
-    GameModeOnlineService gameModeOnlineService;
+    GameModeOnlineService gameModeOnlineService = new GameModeOnlineService();
     public GameManagerController(GameManagerView gameManagerView) {
         this.gameManagerView = gameManagerView;
     }
@@ -21,7 +21,8 @@ public class GameManagerController {
                 break;
             case 2:
                 System.out.println("Entrando em novo jogo online...");
-
+                gameModeOnlineService.initializeClient();
+                gameModeOnlineService.createRoom();
                 break;
             case 3:
                 System.out.println("Entrando em uma sala...");

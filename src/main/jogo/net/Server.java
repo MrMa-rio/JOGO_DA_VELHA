@@ -6,9 +6,12 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import src.main.jogo.models.GameRoom;
 import src.main.jogo.net.packets.DisconnectPacket;
 import src.main.jogo.net.packets.ClientPacket;
 import src.main.jogo.net.packets.SendMessagePacket;
+import src.main.jogo.net.packets.SendCreateRoomPacket;
+import src.main.jogo.services.GameManagerService;
 
 public class Server implements Runnable {
     private final int TICKS_PER_SECOND = 20;
@@ -17,6 +20,7 @@ public class Server implements Runnable {
     public final static int DEFAULT_PORT_NUMBER = 1234;
     private ServerSocket serverSocket;
     private final ArrayList<ClientHandler> clientHandlers;
+    private final GameManagerService gameManagerService = new GameManagerService();
 
     public Server(final int port) {
         try {
@@ -39,7 +43,7 @@ public class Server implements Runnable {
             try {
                 final Socket socket = serverSocket.accept();
                 System.out.println("UM JOGADOR SE CONECTOU");
-                final ClientHandler clientHandler = new ClientHandler(this, socket, UUID.randomUUID().toString());
+                final ClientHandler clientHandler = new ClientHandler(this, socket);
                 clientHandlers.add(clientHandler);
                 new Thread(clientHandler).start(); //AJUDA
                 sendUpdateForOthers(clientHandler, new SendMessagePacket("UM NOVO PLAYER SE CONECTOU"));
@@ -74,16 +78,21 @@ public class Server implements Runnable {
                 throw new RuntimeException(e);
             }
         }
-//        else if(packet instanceof final SendPositionPacket sendPositionPacket){
-//
-//            try {
-//                String message = sendPositionPacket.SendMessage.getMessage();
-//                System.out.println("O player "+ playerHandler.getClientId() + "\n" + "enviou a seguinte mensagem: " + message);
-//                sendUpdateForOthers(playerHandler, sendPositionPacket);
-//            } catch (Exception e) {
-//                throw new RuntimeException(e);
-//            }
-//        }
+        else if(packet instanceof final SendCreateRoomPacket sendCreateRoomPacket){
+
+            try {
+                GameRoom gameRoom = sendCreateRoomPacket.getGameRoom();
+                System.out.println("O player "
+                        + clientHandler.getClientId()
+                        + "\n" + "criou uma sala com o nome de: "
+                        + gameRoom.getCodeRoom());
+
+                gameManagerService.handleCreateRoom(gameRoom);
+                sendUpdateForOthers(clientHandler, sendCreateRoomPacket);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
         else if (packet instanceof final DisconnectPacket disconnectPacket) {
             clientHandler.disconnect();
             System.out.println("REMOVE DADOS DO JOGADOR");
@@ -122,11 +131,9 @@ public class Server implements Runnable {
             e.printStackTrace();
         }
     }
-
     public ServerSocket getServerSocket() {
         return serverSocket;
     }
-
     public static void main(final String[] args) {
         new Server(Server.DEFAULT_PORT_NUMBER).run();
     }

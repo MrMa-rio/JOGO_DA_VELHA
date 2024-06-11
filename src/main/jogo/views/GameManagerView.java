@@ -1,6 +1,7 @@
 package src.main.jogo.views;
 
 import src.main.jogo.controllers.GameManagerController;
+import src.main.jogo.models.GameRoom;
 import src.main.jogo.models.Player;
 
 import java.util.ArrayList;
@@ -32,6 +33,19 @@ public class GameManagerView {
         });
         System.out.println("Dados dos Jogadores recebido com sucesso!!");
     }
+    public void showListGameRooms(ArrayList<GameRoom> gameRooms){
+        System.out.println("TOTAL DE SALAS:");
+        System.out.println("--------------------------------------------");
+        if(gameRooms.isEmpty()){
+            System.out.println("Sem Salas Disponiveis!");
+        }
+        gameRooms.forEach((room) -> {
+            System.out.println("SALA " + (gameRooms.indexOf(room) + 1 ) + ": " + room.getCodeRoom());
+            System.out.println("HOST: " + room.getHostId());
+            System.out.println("--------------------------------------------");
+        });
+        System.out.println("Dados das salas recebido com sucesso!!");
+    }
     public void startGame(){
         do{
             System.out.println("--------------------------------------------");
@@ -39,7 +53,7 @@ public class GameManagerView {
             System.out.println("[2] NOVO JOGO ONLINE <-");
             System.out.println("[3] ENTRAR EM UMA SALA <-");
             System.out.println("[0] SAIR DO JOGO <-");
-            System.out.print("-->");
+            System.out.print("--> ");
         } while(!gameManagerController.handleGameModelSelected(scanner.nextInt()));
         System.out.println("--------------------------------------------");
     }

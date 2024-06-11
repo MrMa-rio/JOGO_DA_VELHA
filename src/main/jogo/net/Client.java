@@ -4,18 +4,16 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.UUID;
 
-import src.main.jogo.net.packets.SendMessagePacket;
-import src.main.jogo.net.packets.ClientPacket;
-import src.main.jogo.net.packets.DisconnectPacket;
-import src.main.jogo.net.packets.SendPositionPacket;
+import src.main.jogo.net.packets.*;
 
 public class Client implements Runnable {
     private boolean isConnected;
     private final Socket socket;
     private final ObjectInputStream inputStream;
     private final ObjectOutputStream outputStream;
-    private final Scanner scanner = new Scanner(System.in);
+    private String clientId = UUID.randomUUID().toString();
     private Thread startRead;
     private Thread startWrite;
 
@@ -27,9 +25,11 @@ public class Client implements Runnable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
+        initialClientCommunication();
     }
-
+    public String getClientId() {
+        return clientId;
+    }
     @Override
     public void run() {
         isConnected = true;
@@ -37,18 +37,24 @@ public class Client implements Runnable {
         startWrite = new Thread(this::startWriteLoop);
         startRead.start();
         startWrite.start();
-    }
 
+    }
+    private void initialClientCommunication() {
+        try {
+            outputStream.writeObject(new SendClientPacket(getClientId()));
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
+    }
     private void startWriteLoop() {
         while (isConnected) {
             try {
-                sendPacket(new SendMessagePacket(scanner.nextLine()));
+                //sendPacket(new SendMessagePacket(scanner.nextLine()));
             }catch ( Exception e) {
                 throw new RuntimeException(e);
             }
         }
     }
-
     private void startReadLoop() {
         while (isConnected) {
             try {
@@ -59,7 +65,6 @@ public class Client implements Runnable {
             }
         }
     }
-
     public void sendPacket(final ClientPacket packet) {
         try {
             outputStream.writeObject(packet);
@@ -69,8 +74,11 @@ public class Client implements Runnable {
         }
     }
     public void processPacket(ClientPacket packet){
+
         if(packet instanceof final SendMessagePacket sendMessagePacket){
             System.out.println(sendMessagePacket.getMessage());
+        } else if (packet instanceof final SendClientPacket sendClientPacket) {
+            this.clientId = sendClientPacket.getClientId();
         } else if (packet instanceof final SendPositionPacket sendPositionPacket) {
             System.out.println(sendPositionPacket.getMessage());
         }
@@ -78,7 +86,6 @@ public class Client implements Runnable {
             System.out.println(disconnectPacket.getMessage());
         }
     }
-
     public void disconnect() {
         System.out.println("DESCONEXAO PELO SERVIDOR ");
         isConnected = false;
@@ -97,7 +104,4 @@ public class Client implements Runnable {
             e.printStackTrace();
         }
     }
-//    public static void main(final String[] args) throws IOException {
-//        new Client().run();
-//    }
 }
