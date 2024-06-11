@@ -25,6 +25,9 @@ public class GameManagerController {
                 gameModeOnlineService.createRoom();
                 break;
             case 3:
+
+                gameModeOnlineService.initializeClient();
+                gameModeOnlineService.enterRoom();
                 System.out.println("Entrando em uma sala...");
                 break;
             case 0:

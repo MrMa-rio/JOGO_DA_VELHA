@@ -1,6 +1,8 @@
 package src.main.jogo.models;
 
-public class Player {
+import java.io.Serializable;
+
+public class Player implements Serializable {
     private final String playerId;
     private final String playerName;
 

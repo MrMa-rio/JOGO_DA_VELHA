@@ -7,21 +7,15 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import src.main.jogo.models.GameRoom;
-import src.main.jogo.net.packets.DisconnectPacket;
-import src.main.jogo.net.packets.ClientPacket;
-import src.main.jogo.net.packets.SendMessagePacket;
-import src.main.jogo.net.packets.SendCreateRoomPacket;
+import src.main.jogo.models.Player;
+import src.main.jogo.net.packets.*;
 import src.main.jogo.services.GameManagerService;
 
 public class Server implements Runnable {
-    private final int TICKS_PER_SECOND = 20;
-    private final int MILLISECONDS_PER_TICK = 1000000000 / TICKS_PER_SECOND;
-
     public final static int DEFAULT_PORT_NUMBER = 1234;
     private ServerSocket serverSocket;
     private final ArrayList<ClientHandler> clientHandlers;
     private final GameManagerService gameManagerService = new GameManagerService();
-
     public Server(final int port) {
         try {
             this.serverSocket = new ServerSocket(port);
@@ -36,7 +30,6 @@ public class Server implements Runnable {
         new Thread(this::startAcceptClientsLoop).start();
         new Thread(this::startGameloop).start();
     }
-
     private void startAcceptClientsLoop() {
         System.out.println("AGUARDANDO NOVOS JOGADORES");
         while (true) {
@@ -45,7 +38,7 @@ public class Server implements Runnable {
                 System.out.println("UM JOGADOR SE CONECTOU");
                 final ClientHandler clientHandler = new ClientHandler(this, socket);
                 clientHandlers.add(clientHandler);
-                new Thread(clientHandler).start(); //AJUDA
+                new Thread(clientHandler).start();
                 sendUpdateForOthers(clientHandler, new SendMessagePacket("UM NOVO PLAYER SE CONECTOU"));
             } catch (final IOException e) {
                 System.out.println(e.getMessage());
@@ -53,10 +46,11 @@ public class Server implements Runnable {
             }
         }
     }
-
     private void startGameloop() {
       long lastTickTime = System.nanoTime();
         while (true) {
+            int TICKS_PER_SECOND = 20;
+            int MILLISECONDS_PER_TICK = 1000000000 / TICKS_PER_SECOND;
             final long whenShouldNextTickRun = lastTickTime + MILLISECONDS_PER_TICK;
             if (System.nanoTime() < whenShouldNextTickRun) {
                 continue;
@@ -68,7 +62,6 @@ public class Server implements Runnable {
 
     public void processPacket(final ClientHandler clientHandler, final ClientPacket packet) {
         System.out.println("Processando pacote...");
-
         if (packet instanceof final SendMessagePacket sendMessagePacket) {
             try {
                 String message = sendMessagePacket.getMessage();
@@ -78,17 +71,33 @@ public class Server implements Runnable {
                 throw new RuntimeException(e);
             }
         }
+        else if (packet instanceof final SendPlayerPacket sendPlayerPacket ) {
+            Player player = sendPlayerPacket.getPlayer();
+            gameManagerService.setGuestPlayersInList(player);
+            gameManagerService.showListGuestPlayers();
+        }
         else if(packet instanceof final SendCreateRoomPacket sendCreateRoomPacket){
-
             try {
                 GameRoom gameRoom = sendCreateRoomPacket.getGameRoom();
                 System.out.println("O player "
                         + clientHandler.getClientId()
                         + "\n" + "criou uma sala com o nome de: "
                         + gameRoom.getCodeRoom());
-
                 gameManagerService.handleCreateRoom(gameRoom);
                 sendUpdateForOthers(clientHandler, sendCreateRoomPacket);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        else if(packet instanceof final SendEnterRoomPacket sendEnterRoomPacket){
+            try {
+                String codeRoom = sendEnterRoomPacket.getCodeRoom();
+                System.out.println("O player "
+                        + clientHandler.getClientId()
+                        + "\n" + "quer entrar em uma sala com o nome de: "
+                        + codeRoom);
+                gameManagerService.handleCreateRoom(gameRoom);
+                sendUpdateForOthers(clientHandler, sendEnterRoomPacket);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -100,22 +109,17 @@ public class Server implements Runnable {
             sendUpdateForOthers(clientHandler, disconnectPacket);
         }
     }
-
-    // server to all client
     private void sendUpdatesToAll() {
         for (final ClientHandler clientHandler : clientHandlers) {
             sendUpdates(clientHandler);
         }
     }
-
-    // server to one client
     public void sendUpdates(final ClientHandler clientHandler, ClientPacket packet) {
         clientHandler.sendUpdate(packet);
     }
     public void sendUpdates(final ClientHandler clientHandler) {
         clientHandler.sendUpdate(new ClientPacket());
     }
-
     public void sendUpdateForOthers(ClientHandler clientHandler, ClientPacket packet){
         for (final ClientHandler otherClientHandler : clientHandlers) {
             if(clientHandler != otherClientHandler){
@@ -123,7 +127,6 @@ public class Server implements Runnable {
             }
         }
     }
-
     public void closeServer() {
         try {
             serverSocket.close();

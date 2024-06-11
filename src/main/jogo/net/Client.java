@@ -37,7 +37,6 @@ public class Client implements Runnable {
         startWrite = new Thread(this::startWriteLoop);
         startRead.start();
         startWrite.start();
-
     }
     private void initialClientCommunication() {
         try {
@@ -74,7 +73,6 @@ public class Client implements Runnable {
         }
     }
     public void processPacket(ClientPacket packet){
-
         if(packet instanceof final SendMessagePacket sendMessagePacket){
             System.out.println(sendMessagePacket.getMessage());
         } else if (packet instanceof final SendClientPacket sendClientPacket) {
@@ -89,11 +87,7 @@ public class Client implements Runnable {
     public void disconnect() {
         System.out.println("DESCONEXAO PELO SERVIDOR ");
         isConnected = false;
-
-        // tell server we disconnected
         sendPacket(new DisconnectPacket("DESCONEXAO PELO SERVIDOR"));
-
-        // close everything
         try {
             socket.close();
             inputStream.close();

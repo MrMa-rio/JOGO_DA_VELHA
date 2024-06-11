@@ -28,7 +28,8 @@ public class GameManagerView {
             System.out.println("Sem Player conectados!");
         }
         guestPlayers.forEach((guest) -> {
-            System.out.println("PlayerTag: " + guest.getPlayerName());
+            System.out.println("PlayerId: " + guest.getPlayerId());
+            System.out.println("PlayerName: " + guest.getPlayerName());
             System.out.println("--------------------------------------------");
         });
         System.out.println("Dados dos Jogadores recebido com sucesso!!");
