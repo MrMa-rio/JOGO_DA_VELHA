@@ -15,7 +15,7 @@ public class Server implements Runnable {
     public final static int DEFAULT_PORT_NUMBER = 1234;
     private ServerSocket serverSocket;
     private final ArrayList<ClientHandler> clientHandlers;
-    private final GameManagerService gameManagerService = new GameManagerService();
+    private GameManagerService gameManagerService = new GameManagerService();
     public Server(final int port) {
         try {
             this.serverSocket = new ServerSocket(port);
@@ -96,8 +96,8 @@ public class Server implements Runnable {
                         + clientHandler.getClientId()
                         + "\n" + "quer entrar em uma sala com o nome de: "
                         + codeRoom);
-                gameManagerService.handleCreateRoom(gameRoom);
-                sendUpdateForOthers(clientHandler, sendEnterRoomPacket);
+                GameRoom gameRoom = gameManagerService.existRoom(codeRoom);
+                sendUpdates(clientHandler, new SendGameRoomPacket(gameRoom));
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

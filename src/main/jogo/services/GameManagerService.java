@@ -5,6 +5,7 @@ import src.main.jogo.models.Player;
 import src.main.jogo.models.GameRoom;
 import src.main.jogo.views.GameManagerView;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class GameManagerService {
     private final ArrayList<Player> guestPlayers = new ArrayList<>();
@@ -32,10 +33,15 @@ public class GameManagerService {
         setGameRoomsInList(gameRoom);
         showListGameRooms();
     }
-    public void existRoom(String codeRoom){
-        //gitif(listGameRooms.isEmpty()) return false;
-       // else if (listGameRooms.stream().map(() -> )) {
-            
-        //}
+    public GameRoom existRoom(String codeRoom){
+        AtomicReference<GameRoom> gameRoom = new AtomicReference<>();
+        if(listGameRooms.isEmpty()) return gameRoom.get();
+        listGameRooms.forEach((room) -> {
+            System.out.println(room.getCodeRoom() + room.getHostId());
+            if(room.getCodeRoom().equals(codeRoom)){
+                gameRoom.set(room);
+            }
+        });
+        return gameRoom.get();
     }
 }

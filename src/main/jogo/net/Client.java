@@ -6,16 +6,20 @@ import java.net.Socket;
 import java.util.Scanner;
 import java.util.UUID;
 
+import src.main.jogo.models.GameRoom;
 import src.main.jogo.net.packets.*;
+import src.main.jogo.services.GameManagerService;
+import src.main.jogo.services.GamePlayerService;
 
 public class Client implements Runnable {
     private boolean isConnected;
     private final Socket socket;
     private final ObjectInputStream inputStream;
     private final ObjectOutputStream outputStream;
+    private final GamePlayerService gamePlayerService = new GamePlayerService();
     private String clientId = UUID.randomUUID().toString();
     private Thread startRead;
-    private Thread startWrite;
+
 
     public Client( final String ipAddress, final int port) {
         try {
@@ -34,9 +38,9 @@ public class Client implements Runnable {
     public void run() {
         isConnected = true;
         startRead = new Thread(this::startReadLoop);
-        startWrite = new Thread(this::startWriteLoop);
+        //startWrite = new Thread(this::startWriteLoop);
         startRead.start();
-        startWrite.start();
+        //startWrite.start();
     }
     private void initialClientCommunication() {
         try {
@@ -75,10 +79,14 @@ public class Client implements Runnable {
     public void processPacket(ClientPacket packet){
         if(packet instanceof final SendMessagePacket sendMessagePacket){
             System.out.println(sendMessagePacket.getMessage());
-        } else if (packet instanceof final SendClientPacket sendClientPacket) {
+        }
+        else if (packet instanceof final SendClientPacket sendClientPacket) {
             this.clientId = sendClientPacket.getClientId();
-        } else if (packet instanceof final SendPositionPacket sendPositionPacket) {
-            System.out.println(sendPositionPacket.getMessage());
+        }
+        else if (packet instanceof final SendGameRoomPacket sendGameRoomPacket){
+            GameRoom gameRoom = sendGameRoomPacket.getGameRoom();
+            if (gameRoom != null) System.out.println(gameRoom.getCodeRoom());
+            gamePlayerService.handleGameRoomExist(gameRoom);
         }
         else if (packet instanceof final DisconnectPacket disconnectPacket) {
             System.out.println(disconnectPacket.getMessage());
@@ -93,7 +101,6 @@ public class Client implements Runnable {
             inputStream.close();
             outputStream.close();
             startRead.interrupt();
-            startWrite.interrupt();
         } catch (final IOException e) {
             e.printStackTrace();
         }

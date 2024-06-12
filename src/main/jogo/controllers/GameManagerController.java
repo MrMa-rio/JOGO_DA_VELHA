@@ -22,11 +22,13 @@ public class GameManagerController {
             case 2:
                 System.out.println("Entrando em novo jogo online...");
                 gameModeOnlineService.initializeClient();
+                gameModeOnlineService.createPlayer();
                 gameModeOnlineService.createRoom();
                 break;
             case 3:
 
                 gameModeOnlineService.initializeClient();
+                gameModeOnlineService.createPlayer();
                 gameModeOnlineService.enterRoom();
                 System.out.println("Entrando em uma sala...");
                 break;

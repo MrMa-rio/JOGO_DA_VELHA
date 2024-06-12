@@ -7,7 +7,7 @@ public class GameModeOnlineView {
 
     public String setCodeRoom(){
         System.out.println("Digite o codigo da sala: ");
-        return scanner.next();
+        return scanner.nextLine();
     }
     public String setPlayerName(){
         System.out.println("Digite seu nome de jogador: ");
