@@ -42,6 +42,7 @@ public class Server implements Runnable {
                 sendUpdateForOthers(clientHandler, new SendMessagePacket("UM NOVO PLAYER SE CONECTOU"));
             } catch (final IOException e) {
                 System.out.println(e.getMessage());
+                e.printStackTrace();
                 break;
             }
         }

@@ -8,9 +8,8 @@ public class GamePlayerService {
     public void handleGameMatch(){
 
     }
-
     public void handleGameRoomExist(GameRoom gameRoom) {
-        while(gameRoom == null){
+        if(gameRoom == null){
             System.out.println("Codigo de sala invalido!");
             gameModeOnlineService.enterRoom();
         }

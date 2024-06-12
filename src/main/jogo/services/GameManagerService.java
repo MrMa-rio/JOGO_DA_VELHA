@@ -37,7 +37,6 @@ public class GameManagerService {
         AtomicReference<GameRoom> gameRoom = new AtomicReference<>();
         if(listGameRooms.isEmpty()) return gameRoom.get();
         listGameRooms.forEach((room) -> {
-            System.out.println(room.getCodeRoom() + room.getHostId());
             if(room.getCodeRoom().equals(codeRoom)){
                 gameRoom.set(room);
             }
