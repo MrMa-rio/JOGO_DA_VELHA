@@ -10,13 +10,16 @@ import src.main.jogo.utils.RandomStringGenerator;
 import src.main.jogo.views.GameModeOnlineView;
 
 public class GameModeOnlineService {
-    GameModeOnlineView gameModeOnlineView = new GameModeOnlineView();
+    private final GameModeOnlineView gameModeOnlineView;
     GameRoom gameRoom = new GameRoom();
     static Client client;
     Player player;
 
+    public GameModeOnlineService(){
+        this.gameModeOnlineView = new GameModeOnlineView();
+    }
     public void initializeClient(){
-        this.client = new Client(/*"172.16.232.203"*/"192.168.3.18", 1234);
+        this.client = new Client("172.16.232.203"/*"192.168.3.18"*/, 1234);
         client.run();
     }
     public void createPlayer(){
@@ -25,15 +28,22 @@ public class GameModeOnlineService {
         this.player = new Player(playerId, playerName);
         client.sendPacket(new SendPlayerPacket(player));
     }
+    public void setGameRoom(String codeRoom, String hostId){
+        this.gameRoom.setCodeRoom(codeRoom);
+        this.gameRoom.setHostId(hostId);
+    }
+
     public void createRoom(){
-        gameRoom.setCodeRoom(RandomStringGenerator.random());
-        gameRoom.setHostId(client.getClientId());
+        setGameRoom(RandomStringGenerator.random(), client.getClientId());
         client.sendPacket(new SendCreateRoomPacket(gameRoom));
         System.out.println("Aguardando jogador se conectar nessa sala...");
     }
     public void enterRoom(){
         String codeRoom = gameModeOnlineView.setCodeRoom();
         client.sendPacket(new SendEnterRoomPacket(codeRoom));
+    }
 
+    public void teste() {
+        System.out.println("Comecando a partida!");
     }
 }

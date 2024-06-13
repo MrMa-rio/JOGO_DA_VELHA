@@ -16,7 +16,7 @@ public class Client implements Runnable {
     private final Socket socket;
     private final ObjectInputStream inputStream;
     private final ObjectOutputStream outputStream;
-    private final GamePlayerService gamePlayerService = new GamePlayerService();
+    private final GamePlayerService gamePlayerService;
     private String clientId = UUID.randomUUID().toString();
     private Thread startRead;
 
@@ -29,6 +29,7 @@ public class Client implements Runnable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        this.gamePlayerService = new GamePlayerService();
         initialClientCommunication();
     }
     public String getClientId() {
@@ -85,7 +86,6 @@ public class Client implements Runnable {
         }
         else if (packet instanceof final SendGameRoomPacket sendGameRoomPacket){
             GameRoom gameRoom = sendGameRoomPacket.getGameRoom();
-            if (gameRoom != null) System.out.println(gameRoom.getCodeRoom());
             gamePlayerService.handleGameRoomExist(gameRoom);
         }
         else if (packet instanceof final DisconnectPacket disconnectPacket) {

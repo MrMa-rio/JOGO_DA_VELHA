@@ -15,13 +15,14 @@ public class Server implements Runnable {
     public final static int DEFAULT_PORT_NUMBER = 1234;
     private ServerSocket serverSocket;
     private final ArrayList<ClientHandler> clientHandlers;
-    private GameManagerService gameManagerService = new GameManagerService();
+    private GameManagerService gameManagerService;
     public Server(final int port) {
         try {
             this.serverSocket = new ServerSocket(port);
         } catch (final IOException e) {
             e.printStackTrace();
         }
+        this.gameManagerService = new GameManagerService();
         clientHandlers = new ArrayList<>();
     }
 
