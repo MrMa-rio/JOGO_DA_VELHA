@@ -6,10 +6,7 @@ import src.main.jogo.models.GameRoom;
 public class GamePlayerService {
     private final GameModeOnlineService gameModeOnlineService;
     public GamePlayerService(){
-        this.gameModeOnlineService = new GameModeOnlineService();
-    }
-    public void handleGameMatch(){
-
+       this.gameModeOnlineService = new GameModeOnlineService();
     }
     public void handleGameRoomExist(GameRoom gameRoom) {
         if(gameRoom == null){

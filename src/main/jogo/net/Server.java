@@ -4,8 +4,9 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.UUID;
+import java.util.Objects;
 
+import src.main.jogo.models.GameMatch;
 import src.main.jogo.models.GameRoom;
 import src.main.jogo.models.Player;
 import src.main.jogo.net.packets.*;
@@ -103,6 +104,19 @@ public class Server implements Runnable {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
+        }
+        else if (packet instanceof final SendPlayerEnteredRoomPacket sendPlayerEnteredRoomPacket) {
+            GameRoom gameRoom = sendPlayerEnteredRoomPacket.getGameRoom();
+            Player guestplayer = sendPlayerEnteredRoomPacket.getGuestPlayer(); //AQUI
+            System.out.println("Uma partida ira comecar...");
+            GameMatch gameMatch = gameManagerService.handleStartingGameMatch(gameRoom, guestplayer);
+            clientHandlers.forEach((client) -> {
+                gameMatch.getListPlayers().forEach((player) -> {
+                    if(Objects.equals(client.getClientId(), player.playerId())) {
+                        sendUpdates(client, new SendStartingGameMatchPacket(gameMatch));
+                    }
+                });
+            } );
         }
         else if (packet instanceof final DisconnectPacket disconnectPacket) {
             clientHandler.disconnect();

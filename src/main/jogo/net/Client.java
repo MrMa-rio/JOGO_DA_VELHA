@@ -3,12 +3,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Scanner;
 import java.util.UUID;
-
 import src.main.jogo.models.GameRoom;
 import src.main.jogo.net.packets.*;
-import src.main.jogo.services.GameManagerService;
 import src.main.jogo.services.GamePlayerService;
 
 public class Client implements Runnable {
@@ -87,6 +84,9 @@ public class Client implements Runnable {
         else if (packet instanceof final SendGameRoomPacket sendGameRoomPacket){
             GameRoom gameRoom = sendGameRoomPacket.getGameRoom();
             gamePlayerService.handleGameRoomExist(gameRoom);
+        }
+        else if(packet instanceof final  SendStartingGameMatchPacket sendStartingGameMatchPacket){
+            System.out.println("PARTIDA INICIADA");
         }
         else if (packet instanceof final DisconnectPacket disconnectPacket) {
             System.out.println(disconnectPacket.getMessage());

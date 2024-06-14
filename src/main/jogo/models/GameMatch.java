@@ -1,10 +1,15 @@
 package src.main.jogo.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class GameMatch {
+public class GameMatch implements Serializable {
     GameRoom gameRoom;
     ArrayList<Player> listPlayers;
+    public GameMatch(){
+        this.gameRoom = new GameRoom();
+        this.listPlayers = new ArrayList<>();
+    }
     public GameRoom getGameRoom() {
         return gameRoom;
     }

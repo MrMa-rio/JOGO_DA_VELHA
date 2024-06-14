@@ -17,8 +17,8 @@ public class GameManagerView {
     public void receiveGuestPlayerConnected(Player guestPlayer){
         System.out.println("------------------------------------------");
         System.out.println("Recebendo dados de um Player...");
-        System.out.println("Player ID: " + guestPlayer.getPlayerId());
-        System.out.println("PlayerTag: " + guestPlayer.getPlayerName());
+        System.out.println("Player ID: " + guestPlayer.playerId());
+        System.out.println("PlayerTag: " + guestPlayer.playerName());
         System.out.println("--------------------------------------------");
     }
     public void showListGuestPlayersConnected(ArrayList<Player> guestPlayers){
@@ -28,8 +28,8 @@ public class GameManagerView {
             System.out.println("Sem Player conectados!");
         }
         guestPlayers.forEach((guest) -> {
-            System.out.println("PlayerId: " + guest.getPlayerId());
-            System.out.println("PlayerName: " + guest.getPlayerName());
+            System.out.println("PlayerId: " + guest.playerId());
+            System.out.println("PlayerName: " + guest.playerName());
             System.out.println("--------------------------------------------");
         });
         System.out.println("Dados dos Jogadores recebido com sucesso!!");

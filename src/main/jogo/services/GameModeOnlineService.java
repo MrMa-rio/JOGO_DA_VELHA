@@ -5,6 +5,7 @@ import src.main.jogo.models.Player;
 import src.main.jogo.net.Client;
 import src.main.jogo.net.packets.SendCreateRoomPacket;
 import src.main.jogo.net.packets.SendEnterRoomPacket;
+import src.main.jogo.net.packets.SendPlayerEnteredRoomPacket;
 import src.main.jogo.net.packets.SendPlayerPacket;
 import src.main.jogo.utils.RandomStringGenerator;
 import src.main.jogo.views.GameModeOnlineView;
@@ -13,13 +14,13 @@ public class GameModeOnlineService {
     private final GameModeOnlineView gameModeOnlineView;
     GameRoom gameRoom = new GameRoom();
     static Client client;
-    Player player;
+    private Player player;
 
     public GameModeOnlineService(){
         this.gameModeOnlineView = new GameModeOnlineView();
     }
     public void initializeClient(){
-        this.client = new Client("172.16.232.203"/*"192.168.3.18"*/, 1234);
+        client = new Client(/*"172.16.232.203"*/"192.168.3.18", 1234);
         client.run();
     }
     public void createPlayer(){
@@ -44,6 +45,7 @@ public class GameModeOnlineService {
     }
 
     public void teste() {
-        System.out.println("Comecando a partida!");
+        System.out.println(player + " EITA"); //
+        client.sendPacket(new SendPlayerEnteredRoomPacket(gameRoom, player));
     }
 }
