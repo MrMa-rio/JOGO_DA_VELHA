@@ -4,6 +4,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.UUID;
+
+import src.main.jogo.models.GameMatch;
 import src.main.jogo.models.GameRoom;
 import src.main.jogo.net.packets.*;
 import src.main.jogo.services.GamePlayerService;
@@ -86,7 +88,23 @@ public class Client implements Runnable {
             gamePlayerService.handleGameRoomExist(gameRoom);
         }
         else if(packet instanceof final  SendStartingGameMatchPacket sendStartingGameMatchPacket){
-            System.out.println("PARTIDA INICIADA");
+            GameMatch gameMatch = sendStartingGameMatchPacket.getGameMatch();
+            gamePlayerService.handleStartingMatching(gameMatch);
+        }
+        else if (packet.getClass() == SendGameBoardPacket.class) {
+            gamePlayerService.handleShowBoardState(((SendGameBoardPacket) packet).getGameBoard());
+        }
+        else if (packet.getClass() == SendStateGameBoardPacket.class) {
+            if(((SendStateGameBoardPacket) packet).getIsFirstMove()){
+                System.out.println("Faca a primeira jogada");
+                gamePlayerService.handleMovePlayer();
+                return;
+            }
+            System.out.println("==========================================================");
+            //gamePlayerService.handleShowBoardState(((SendStateGameBoardPacket) packet).getGameBoard());
+            System.out.println("Faca sua jogada");
+            gamePlayerService.handleMovePlayer();
+
         }
         else if (packet instanceof final DisconnectPacket disconnectPacket) {
             System.out.println(disconnectPacket.getMessage());

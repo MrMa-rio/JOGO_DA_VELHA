@@ -4,6 +4,7 @@ import src.main.jogo.models.GameBoard;
 
 public class GameBoardView {
     public void showGameBoard(String[][] board) {
+        System.out.println("==========================================================");
         for (String[] strings : board) {
             System.out.printf(String.format("""
                     %s  |  %s  |  %s

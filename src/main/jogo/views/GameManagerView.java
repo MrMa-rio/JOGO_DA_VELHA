@@ -54,8 +54,9 @@ public class GameManagerView {
             System.out.println("[2] NOVO JOGO ONLINE <-");
             System.out.println("[3] ENTRAR EM UMA SALA <-");
             System.out.println("[0] SAIR DO JOGO <-");
+            System.out.println("--------------------------------------------");
             System.out.print("--> ");
         } while(!gameManagerController.handleGameModelSelected(scanner.nextInt()));
-        System.out.println("--------------------------------------------");
+
     }
 }

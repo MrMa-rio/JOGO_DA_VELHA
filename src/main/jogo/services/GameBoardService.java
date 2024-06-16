@@ -4,28 +4,22 @@ import src.main.jogo.models.GameBoard;
 import src.main.jogo.views.GameBoardView;
 
 public class GameBoardService {
-    private GameBoard ticTacToeBoard;
-    private GameBoardView gameBoardView;
+    private final GameBoardView gameBoardView;
     public GameBoardService(){
         this.gameBoardView = new GameBoardView();
-        this.ticTacToeBoard = new GameBoard();
     }
-    public GameBoard getTicTacToeBoard() {
-        return ticTacToeBoard;
-    }
-    public void setTicTacToeBoard(GameBoard ticTacToeBoard) {
-        this.ticTacToeBoard = ticTacToeBoard;
-    }
-    public GameBoard create(){
+    public GameBoard create(GameBoard gameBoard){
         int counter = 0;
-        for(int i = 0; i < ticTacToeBoard.getGameBoard().length; i++){
-            for (int j = 0; j < ticTacToeBoard.getGameBoard().length; j++){
-                ticTacToeBoard.getGameBoard()[i][j] = String.valueOf (counter++);
+        for(int i = 0; i < gameBoard.getGameBoard().length; i++){
+            for (int j = 0; j < gameBoard.getGameBoard().length; j++){
+                gameBoard.getGameBoard()[i][j] = String.valueOf (counter++);
             }
         }
-        return getTicTacToeBoard();
+        return gameBoard;
     }
-    void showEmptyBoard(GameBoard gameBoard) {
+    public void showEmptyBoard(GameBoard gameBoard) {
         gameBoardView.showEmptyBoard(gameBoard);
     }
+
+
 }
