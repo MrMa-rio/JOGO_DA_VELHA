@@ -1,8 +1,6 @@
 package src.main.jogo.services;
 
-import src.main.jogo.models.GameBoard;
-import src.main.jogo.models.GameMatch;
-import src.main.jogo.models.GameRoom;
+import src.main.jogo.models.*;
 import src.main.jogo.net.packets.SendStartedGameMatchPacket;
 import src.main.jogo.net.packets.SendStateGameBoardPacket;
 
@@ -31,13 +29,15 @@ public class GamePlayerService {
        gameMatchService.handleChoicePosition();
     }
 
-    public void handleMovePlayer() {
+    public void handleMovePlayer(String XO) {
         String codeRoom = gameMatchService.getGameMatch().getGameRoom().getCodeRoom();
-        String XO = gameMatchService.handleChoiceXO();
-        String position = gameMatchService.handleChoicePosition();
         String playerId = GameModeOnlineService.getClient().getClientId();
-        //handleShowBoardState(gameMatchService.getGameMatch().getGameBoard());
-        GameModeOnlineService.getClient().sendPacket(new SendStateGameBoardPacket(playerId, codeRoom, position, XO));
+        PlayerInMatch player = gameMatchService.getGameMatch().getPlayerInListPlayersById(playerId);
+        if(XO.isEmpty()) {
+            player.setXO(gameMatchService.handleChoiceXO());
+        }
+        String position = gameMatchService.handleChoicePosition();
+        GameModeOnlineService.getClient().sendPacket(new SendStateGameBoardPacket(player, codeRoom, position));
     }
 
     public void handleShowBoardState(GameBoard gameBoard) {

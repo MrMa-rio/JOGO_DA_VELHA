@@ -6,10 +6,8 @@ import java.util.Objects;
 public class GameBoard implements Serializable {
     String[][] gameBoard;
     public GameBoard(){
-
         this.gameBoard = new String[3][3];
     }
-
     public String[][] getGameBoard() {
         return gameBoard;
     }
@@ -17,11 +15,6 @@ public class GameBoard implements Serializable {
     public void setGameBoard(String[][] gameBoard) {
         this.gameBoard = gameBoard;
     }
-//    public boolean setPosition(int x, int y, String value){
-//        if(this.gameBoard[x][y].equals("X") || this.gameBoard[x][y].equals("Y")) return false;
-//        this.gameBoard[x][y] = value;
-//        return true;
-//    }
     public void setPosition(String position, String XO){
         String player = position;
         for (String[] a : gameBoard) {

@@ -9,7 +9,7 @@ public class GameMatch implements Serializable {
     private GameRoom gameRoom;
     private GameBoard gameBoard;
     private boolean isStart;
-    ArrayList<Player> listPlayers;
+    ArrayList<PlayerInMatch> listPlayers;
     public GameMatch(){
         this.gameRoom = new GameRoom();
         this.listPlayers = new ArrayList<>();
@@ -33,20 +33,27 @@ public class GameMatch implements Serializable {
     public void setGameRoom(GameRoom gameRoom) {
         this.gameRoom = gameRoom;
     }
-    public void setListPlayers(ArrayList<Player> listPlayers) {
+    public void setListPlayers(ArrayList<PlayerInMatch> listPlayers) {
         this.listPlayers = listPlayers;
     }
-    public ArrayList<Player> getListPlayers() {
+    public ArrayList<PlayerInMatch> getListPlayers() {
         return listPlayers;
     }
     public String getNextPlayer(String playerId){
         AtomicReference<String> nextPlayer = new AtomicReference<>();
         getListPlayers().forEach((player) -> {
-            if(!Objects.equals(player.playerId(), playerId)) nextPlayer.set(player.playerId());
+            if(!Objects.equals(player.getPlayer().playerId(), playerId)) nextPlayer.set(player.getPlayer().playerId());
         });
         return nextPlayer.get();
     }
-    public void setPlayerInListPlayers(Player player) {
+    public void setPlayerInListPlayers(PlayerInMatch player) {
         listPlayers.add(player);
+    }
+    public PlayerInMatch getPlayerInListPlayersById(String playerId){
+        AtomicReference<PlayerInMatch> playerInList = new AtomicReference<>();
+        getListPlayers().forEach((player) -> {
+            if(Objects.equals(player.getPlayer().playerId(), playerId)) playerInList.set(player);
+        });
+        return playerInList.get();
     }
 }

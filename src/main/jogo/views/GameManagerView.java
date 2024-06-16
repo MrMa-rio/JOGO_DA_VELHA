@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class GameManagerView {
-    GameManagerController gameManagerController = new GameManagerController(this);
+    GameManagerController gameManagerController = new GameManagerController();
     Scanner scanner = new Scanner(System.in);
     public String sendPlayerName(){
         System.out.print("Digite seu nome de jogador: ");

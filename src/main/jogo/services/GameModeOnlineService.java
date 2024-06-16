@@ -18,8 +18,8 @@ public class GameModeOnlineService {
     public GameModeOnlineService(){
         this.gameModeOnlineView = new GameModeOnlineView();
     }
-    public void initializeClient(){
-        client = new Client(/*"172.16.232.203"*/"192.168.3.18", 1234);
+    public void initializeClient(String ipAdress, int port){
+        client = new Client(ipAdress, port);
         client.run();
     }
 

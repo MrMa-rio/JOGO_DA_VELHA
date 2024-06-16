@@ -9,6 +9,7 @@ import java.util.Objects;
 import src.main.jogo.models.GameMatch;
 import src.main.jogo.models.GameRoom;
 import src.main.jogo.models.Player;
+import src.main.jogo.models.PlayerInMatch;
 import src.main.jogo.net.packets.*;
 import src.main.jogo.services.GameManagerService;
 
@@ -104,7 +105,9 @@ public class Server implements Runnable {
                 sendUpdates(clientHandler, new SendGameRoomPacket(gameRoom));
                 if(gameRoom == null) return;
                 GameMatch gameMatch = gameManagerService.handleStartingGameMatch(gameRoom, clientHandler.getClientId());
-                sendUpdatesToAll(new SendStartingGameMatchPacket(gameMatch));
+                gameMatch.getListPlayers().forEach((player) -> {
+                    sendUpdateByClientHandlerId(player.getPlayer().playerId(), new SendStartingGameMatchPacket(gameMatch));
+                });
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -113,10 +116,11 @@ public class Server implements Runnable {
             GameMatch gameMatch = ((SendStartedGameMatchPacket) packet).getGameMatch();
             String codeRoom = gameMatch.getGameRoom().getCodeRoom();
             String hostId = gameMatch.getGameRoom().getHostId();
+            Player player = gameManagerService.getGuestPlayerById(hostId).get();
             if (!gameManagerService.getGameMatchInList(codeRoom).getIsStart()){
                 System.out.println("RECEBENDO PARTIDA INICIADA");
                 gameManagerService.getGameMatchInList(gameMatch.getGameRoom().getCodeRoom()).setStart(true);
-                sendUpdateByClientHandlerId(hostId, new SendStateGameBoardPacket(clientHandler.getClientId()));
+                sendUpdateByClientHandlerId(hostId, new SendStateGameBoardPacket(new PlayerInMatch(player)));
             }
         }
         else if (packet.getClass() == SendStateGameBoardPacket.class) {
@@ -124,12 +128,16 @@ public class Server implements Runnable {
 
             GameMatch gameMatch = gameManagerService.getGameMatchInList(((SendStateGameBoardPacket) packet).getCodeRoom());
             String position = ((SendStateGameBoardPacket) packet).getPosition();
-            String XO = ((SendStateGameBoardPacket) packet).getXO();
-            String playerId = ((SendStateGameBoardPacket) packet).getPlayerId();
-            String nextPlayerId = gameMatch.getNextPlayer(playerId);
-            GameMatch gameMatchUpdated = gameManagerService.handleUpdateStateGame(gameMatch.getGameRoom().getCodeRoom(), position, XO);
-            gameManagerService.handleUpdateStateGameForPlayers(gameMatchUpdated, clientHandlers);
-            sendUpdateByClientHandlerId(nextPlayerId, new SendStateGameBoardPacket(nextPlayerId, gameMatch.getGameRoom().getCodeRoom(), position, XO ));
+            String previousPlayerXO = ((SendStateGameBoardPacket) packet).getPlayerInMatch().getXO(); //Peca do player anterior
+            String previousPlayerId = ((SendStateGameBoardPacket) packet).getPlayerInMatch().getPlayer().playerId(); //ID do player anterior
+            String codeRoom = gameMatch.getGameRoom().getCodeRoom();
+            gameManagerService.getGameMatchInList(codeRoom).getPlayerInListPlayersById(previousPlayerId).setXO(previousPlayerXO);
+            String nextPlayerId = gameMatch.getNextPlayer(previousPlayerId); //Passando player anterior para que ele descubra o proximo player
+            PlayerInMatch nextPlayer = gameManagerService.getGameMatchInList(codeRoom).getPlayerInListPlayersById(nextPlayerId);
+            GameMatch gameMatchUpdated = gameManagerService.handleUpdateGameMatch(codeRoom, position, previousPlayerXO);
+
+            gameManagerService.handleUpdateGameMatchForPlayers(gameMatchUpdated, clientHandlers);
+            sendUpdateByClientHandlerId(nextPlayerId, new SendStateGameBoardPacket(nextPlayer, codeRoom , position ));
         }
         else if (packet instanceof final DisconnectPacket disconnectPacket) {
             clientHandler.disconnect();
@@ -151,7 +159,6 @@ public class Server implements Runnable {
             if(Objects.equals(clientHandler.getClientId(), clientHandlerId)){
                 clientHandler.sendUpdate(packet);
             }
-
         });
     }
     public void sendUpdates(final ClientHandler clientHandler) {

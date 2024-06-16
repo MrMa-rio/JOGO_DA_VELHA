@@ -1,26 +1,27 @@
 package src.main.jogo.net.packets;
 
 import src.main.jogo.models.GameBoard;
+import src.main.jogo.models.Player;
+import src.main.jogo.models.PlayerInMatch;
 
 public class SendStateGameBoardPacket extends ClientPacket {
     public static final long serialVersionUID = -710902470934092114L;
     private String position = "";
     private String codeRoom;
-    private String playerId;
-    private String XO;
+    private PlayerInMatch playerInMatch;
     private GameBoard gameBoard;
     private boolean isFirstMove;
 
-    public SendStateGameBoardPacket(String playerId){
+    public SendStateGameBoardPacket(PlayerInMatch playerInMatch){
         this.isFirstMove = true;
-        this.playerId = playerId;
+        this.playerInMatch = playerInMatch;
     }
-    public SendStateGameBoardPacket(String playerId, String codeRoom, String position, String XO) {
+    public SendStateGameBoardPacket(PlayerInMatch playerInMatch, String codeRoom, String position) {
         this.codeRoom = codeRoom;
         this.position = position;
-        this.XO = XO;
+        this.playerInMatch = playerInMatch;
         this.isFirstMove = false;
-        this.playerId = playerId;
+
     }
     public SendStateGameBoardPacket(GameBoard gameBoard){
         this.gameBoard = gameBoard;
@@ -31,24 +32,14 @@ public class SendStateGameBoardPacket extends ClientPacket {
     public boolean getIsFirstMove(){
         return isFirstMove;
     }
-
-    public String getXO() {
-        return XO;
-    }
-
     public String getCodeRoom() {
         return codeRoom;
     }
-
-    public void setXO(String XO) {
-        this.XO = XO;
-    }
-
-    public String getPlayerId() {
-        return playerId;
-    }
-
     public GameBoard getGameBoard() {
         return gameBoard;
+    }
+
+    public PlayerInMatch getPlayerInMatch() {
+        return playerInMatch;
     }
 }

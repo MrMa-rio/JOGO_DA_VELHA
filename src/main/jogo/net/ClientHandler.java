@@ -79,7 +79,6 @@ public class ClientHandler implements Runnable {
 
         } catch (final IOException e) {
             System.out.println(e.getMessage());
-
             disconnect();
         }
     }

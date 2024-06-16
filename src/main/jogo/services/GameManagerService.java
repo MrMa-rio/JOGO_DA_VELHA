@@ -1,9 +1,6 @@
 package src.main.jogo.services;
 
-import src.main.jogo.models.GameBoard;
-import src.main.jogo.models.GameMatch;
-import src.main.jogo.models.Player;
-import src.main.jogo.models.GameRoom;
+import src.main.jogo.models.*;
 import src.main.jogo.net.ClientHandler;
 import src.main.jogo.net.packets.SendGameBoardPacket;
 import src.main.jogo.views.GameManagerView;
@@ -79,23 +76,23 @@ public class GameManagerService {
         gameBoardService.create(gameMatch.getGameBoard());
         AtomicReference<Player> hostPlayer = getGuestPlayerById(gameRoom.getHostId());
         AtomicReference<Player> guestPlayer = getGuestPlayerById(guestPlayerId);
-        gameMatch.setPlayerInListPlayers(hostPlayer.get());
-        gameMatch.setPlayerInListPlayers(guestPlayer.get());
+        gameMatch.setPlayerInListPlayers(new PlayerInMatch(hostPlayer.get()));
+        gameMatch.setPlayerInListPlayers(new PlayerInMatch(guestPlayer.get()));
         listGameMatches.add(gameMatch);
         return gameMatch;
     }
 
-    public GameMatch handleUpdateStateGame(String codeRoom, String position, String XO) {
+    public GameMatch handleUpdateGameMatch(String codeRoom, String position, String XO) {
         GameMatch gameMatch = getGameMatchInList(codeRoom);
         gameMatch.getGameBoard().setPosition(position, XO);
         return gameMatch;
     }
 
-    public void handleUpdateStateGameForPlayers(GameMatch gameMatch, ArrayList<ClientHandler> clientHandlers) {
-        ArrayList<Player> listPlayers = gameMatch.getListPlayers();
+    public void handleUpdateGameMatchForPlayers(GameMatch gameMatch, ArrayList<ClientHandler> clientHandlers) {
+        ArrayList<PlayerInMatch> listPlayers = gameMatch.getListPlayers();
         listPlayers.forEach((player) -> {
             clientHandlers.forEach((clientHandler) -> {
-                if(Objects.equals(clientHandler.getClientId(), player.playerId())){
+                if(Objects.equals(clientHandler.getClientId(), player.getPlayer().playerId())){
                     clientHandler.sendUpdate(new SendGameBoardPacket(gameMatch.getGameBoard()));
                 }
 
