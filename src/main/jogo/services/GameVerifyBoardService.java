@@ -8,7 +8,7 @@ public class GameVerifyBoardService {
             if(Objects.equals(player, tabuleiro[0][i])){
                 if(Objects.equals(player, tabuleiro[1][i])){
                     if(Objects.equals(player, tabuleiro[2][i])){
-                        System.out.println(String.format("O player %s ganhou na vertical", player));
+                        System.out.printf("O player %s ganhou na vertical%n", player);
                         return true;
                     }
                 }
@@ -22,7 +22,7 @@ public class GameVerifyBoardService {
                 if(Objects.equals(player, tabuleiro[i][1])){
 
                     if(Objects.equals(player, tabuleiro[i][2])){
-                        System.out.println(String.format("O player %s ganhou na horizontal", player));
+                        System.out.printf("O player %s ganhou na horizontal%n", player);
                         return true;
                     }
                 }
@@ -35,7 +35,7 @@ public class GameVerifyBoardService {
             if(Objects.equals(player, tabuleiro[1][1])){
 
                 if (Objects.equals(player, tabuleiro[2][2])) {
-                    System.out.println(String.format("O player %s ganhou na na diagonal esquerda para direita", player));
+                    System.out.printf("O player %s ganhou na na diagonal esquerda para direita%n", player);
                     return true;
                 }
             }

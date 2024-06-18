@@ -15,12 +15,15 @@ public class GameManagerService {
     private final GameManagerView gameManagerView;
     private final GameBoardService gameBoardService;
 
+    private final GameVerifyBoardService gameVerifyBoardService;
+
     public GameManagerService(){
         this.guestPlayers = new ArrayList<>();
         this.listGameRooms = new ArrayList<>();
         this.listGameMatches = new ArrayList<>();
         this.gameManagerView = new GameManagerView();
         this.gameBoardService = new GameBoardService();
+        this.gameVerifyBoardService = new GameVerifyBoardService();
     }
     public void setGameRoomsInList(GameRoom gameRoom) {
         this.listGameRooms.add(gameRoom);
@@ -99,6 +102,13 @@ public class GameManagerService {
             });
         });
 
+    }
+
+    public boolean handleVerifyBoard(GameMatch gameMatchUpdated, String XO) {
+        return gameVerifyBoardService.naHorizontal(XO, gameMatchUpdated.getGameBoard().getGameBoard()) ||
+                gameVerifyBoardService.naVertical(XO, gameMatchUpdated.getGameBoard().getGameBoard()) ||
+                gameVerifyBoardService.naSemiCruzDirEsq(XO, gameMatchUpdated.getGameBoard().getGameBoard()) ||
+                gameVerifyBoardService.naSemiCruzEsqDir(XO, gameMatchUpdated.getGameBoard().getGameBoard());
     }
     //Apos corrigir, comecar a logica de que cada player tera sua vez de jogar.
 

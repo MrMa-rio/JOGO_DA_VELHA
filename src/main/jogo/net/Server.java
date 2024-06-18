@@ -135,7 +135,7 @@ public class Server implements Runnable {
             String nextPlayerId = gameMatch.getNextPlayer(previousPlayerId); //Passando player anterior para que ele descubra o proximo player
             PlayerInMatch nextPlayer = gameManagerService.getGameMatchInList(codeRoom).getPlayerInListPlayersById(nextPlayerId);
             GameMatch gameMatchUpdated = gameManagerService.handleUpdateGameMatch(codeRoom, position, previousPlayerXO);
-
+            if(gameManagerService.handleVerifyBoard(gameMatchUpdated, previousPlayerXO)) System.out.println("Alguem ganhou aqui...");
             gameManagerService.handleUpdateGameMatchForPlayers(gameMatchUpdated, clientHandlers);
             sendUpdateByClientHandlerId(nextPlayerId, new SendStateGameBoardPacket(nextPlayer, codeRoom , position, previousPlayerXO ));
         }
@@ -161,9 +161,9 @@ public class Server implements Runnable {
             }
         });
     }
-    public void sendUpdates(final ClientHandler clientHandler) {
-        clientHandler.sendUpdate(new ClientPacket());
-    }
+    //public void sendUpdates(final ClientHandler clientHandler) {
+     //   clientHandler.sendUpdate(new ClientPacket());
+    //}
     public void sendUpdateForOthers(ClientHandler clientHandler, ClientPacket packet){
         for (final ClientHandler otherClientHandler : clientHandlers) {
             if(clientHandler != otherClientHandler){
