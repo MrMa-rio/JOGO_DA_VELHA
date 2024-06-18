@@ -73,6 +73,7 @@ public class Client implements Runnable {
                 try {
                     clientPacket = (ClientPacket) inputStream.readObject();
                 } catch (IOException | ClassNotFoundException ex) {
+                    System.out.println(ex.getMessage());
                     throw new RuntimeException(ex);
                 }
                 processPacket(clientPacket); //Pode dar muito errado, foi analisado que as vezes o tick de leitura se esbarra com o tick de outro cliente gerando o erro stream active
@@ -109,12 +110,14 @@ public class Client implements Runnable {
         else if (packet.getClass() == SendStateGameBoardPacket.class) {
             if(((SendStateGameBoardPacket) packet).getIsFirstMove()){
                 System.out.println("Faca a primeira jogada");
-                gamePlayerService.handleMovePlayer(((SendStateGameBoardPacket) packet).getPlayerInMatch().getXO());
+                gamePlayerService.handleMovePlayer(((SendStateGameBoardPacket) packet).getPlayerInMatch().getXO(), "");
                 return;
             }
+            String XO =((SendStateGameBoardPacket) packet).getPlayerInMatch().getXO();
+            String hostXO = ((SendStateGameBoardPacket) packet).getHostXO();
             System.out.println("==========================================================");
             System.out.println("Faca sua jogada");
-            gamePlayerService.handleMovePlayer(((SendStateGameBoardPacket) packet).getPlayerInMatch().getXO());
+            gamePlayerService.handleMovePlayer(XO, hostXO );
         }
         else if (packet instanceof final DisconnectPacket disconnectPacket) {
             System.out.println(disconnectPacket.getMessage());

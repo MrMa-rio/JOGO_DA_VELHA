@@ -29,15 +29,15 @@ public class GamePlayerService {
        gameMatchService.handleChoicePosition();
     }
 
-    public void handleMovePlayer(String XO) {
+    public void handleMovePlayer(String XO, String hostXO) {
         String codeRoom = gameMatchService.getGameMatch().getGameRoom().getCodeRoom();
         String playerId = GameModeOnlineService.getClient().getClientId();
         PlayerInMatch player = gameMatchService.getGameMatch().getPlayerInListPlayersById(playerId);
-        if(XO.isEmpty()) {
-            player.setXO(gameMatchService.handleChoiceXO());
+        if (XO.isEmpty()){
+            player.setXO(gameMatchService.handleChoiceXO(hostXO));
         }
         String position = gameMatchService.handleChoicePosition();
-        GameModeOnlineService.getClient().sendPacket(new SendStateGameBoardPacket(player, codeRoom, position));
+        GameModeOnlineService.getClient().sendPacket(new SendStateGameBoardPacket(player, codeRoom, position, player.getXO()));
     }
 
     public void handleShowBoardState(GameBoard gameBoard) {

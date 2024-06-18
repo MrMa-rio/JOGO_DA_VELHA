@@ -9,6 +9,7 @@ public class SendStateGameBoardPacket extends ClientPacket {
     private String position = "";
     private String codeRoom;
     private PlayerInMatch playerInMatch;
+    private String hostXO;
     private GameBoard gameBoard;
     private boolean isFirstMove;
 
@@ -16,11 +17,12 @@ public class SendStateGameBoardPacket extends ClientPacket {
         this.isFirstMove = true;
         this.playerInMatch = playerInMatch;
     }
-    public SendStateGameBoardPacket(PlayerInMatch playerInMatch, String codeRoom, String position) {
+    public SendStateGameBoardPacket(PlayerInMatch playerInMatch, String codeRoom, String position, String hostXO) {
         this.codeRoom = codeRoom;
         this.position = position;
         this.playerInMatch = playerInMatch;
         this.isFirstMove = false;
+        this.hostXO = hostXO;
 
     }
     public SendStateGameBoardPacket(GameBoard gameBoard){
@@ -37,6 +39,10 @@ public class SendStateGameBoardPacket extends ClientPacket {
     }
     public GameBoard getGameBoard() {
         return gameBoard;
+    }
+
+    public String getHostXO() {
+        return hostXO;
     }
 
     public PlayerInMatch getPlayerInMatch() {

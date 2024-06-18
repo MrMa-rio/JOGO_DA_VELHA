@@ -137,7 +137,7 @@ public class Server implements Runnable {
             GameMatch gameMatchUpdated = gameManagerService.handleUpdateGameMatch(codeRoom, position, previousPlayerXO);
 
             gameManagerService.handleUpdateGameMatchForPlayers(gameMatchUpdated, clientHandlers);
-            sendUpdateByClientHandlerId(nextPlayerId, new SendStateGameBoardPacket(nextPlayer, codeRoom , position ));
+            sendUpdateByClientHandlerId(nextPlayerId, new SendStateGameBoardPacket(nextPlayer, codeRoom , position, previousPlayerXO ));
         }
         else if (packet instanceof final DisconnectPacket disconnectPacket) {
             clientHandler.disconnect();

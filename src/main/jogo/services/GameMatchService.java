@@ -32,9 +32,9 @@ public class GameMatchService {
         String position = gameMovePlayerView.choicePositionPlayer();
         return position;
     }
-    public String handleChoiceXO(){
-        String XO = gameMovePlayerView.choiceXO();
-        return XO;
+    public String handleChoiceXO(String hostXO){
+        String choiceXO = gameMovePlayerView.choiceXO(hostXO);
+        return choiceXO;
     }
 
     public void handleShowBoardState(GameBoard gameBoard) {

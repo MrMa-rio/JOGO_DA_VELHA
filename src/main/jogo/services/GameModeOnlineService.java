@@ -41,6 +41,7 @@ public class GameModeOnlineService {
     public void createRoom(){
         setGameRoom(RandomStringGenerator.random(), client.getClientId());
         client.sendPacket(new SendCreateRoomPacket(gameRoom));
+        System.out.println("O codigo da sala e: " + gameRoom.getCodeRoom());
         System.out.println("Aguardando jogador se conectar nessa sala...");
     }
     public void enterRoom(){
