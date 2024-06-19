@@ -19,10 +19,12 @@ public class GameManagerController {
                 System.out.println("Entrando em novo jogo offline...");
                 break;
             case 2:
-                ipAdress = gameModeOnlineView.setIpAdress();
-                port = gameModeOnlineView.setPort();
+
+                do{
+                    ipAdress = gameModeOnlineView.setIpAdress();
+                    port = gameModeOnlineView.setPort();
+                } while(!gameModeOnlineService.initializeClient(ipAdress, port));
                 System.out.println("Entrando em novo jogo online...");
-                gameModeOnlineService.initializeClient(ipAdress, port);
                 gameModeOnlineService.createPlayer();
                 gameModeOnlineService.createRoom();
                 break;

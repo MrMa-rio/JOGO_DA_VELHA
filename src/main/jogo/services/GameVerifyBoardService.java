@@ -1,68 +1,64 @@
 package src.main.jogo.services;
 
+import src.main.jogo.net.packets.SendWinLoseOrTiePacket;
+
 import java.util.Objects;
 
 public class GameVerifyBoardService {
-    boolean naVertical(String player, String[][] tabuleiro){
+    String naVertical(String XO, String[][] tabuleiro, String playerName){
         for(int i = 0; i <= 2; i++){
-            if(Objects.equals(player, tabuleiro[0][i])){
-                if(Objects.equals(player, tabuleiro[1][i])){
-                    if(Objects.equals(player, tabuleiro[2][i])){
-                        System.out.printf("O player %s ganhou na vertical%n", player);
-                        return true;
+            if(Objects.equals(XO, tabuleiro[0][i])){
+                if(Objects.equals(XO, tabuleiro[1][i])){
+                    if(Objects.equals(XO, tabuleiro[2][i])){
+
+                        return String.format("O player %s ganhou na vertical", playerName);
                     }
                 }
             }
         }
-        return false;
+        return "";
     }
-    boolean naHorizontal(String player, String[][] tabuleiro){
+    String naHorizontal(String XO, String[][] tabuleiro, String playerName){
         for(int i = 0; i <= 2; i++){
-            if(Objects.equals(player, tabuleiro[i][0])){
-                if(Objects.equals(player, tabuleiro[i][1])){
-
-                    if(Objects.equals(player, tabuleiro[i][2])){
-                        System.out.printf("O player %s ganhou na horizontal%n", player);
-                        return true;
+            if(Objects.equals(XO, tabuleiro[i][0])){
+                if(Objects.equals(XO, tabuleiro[i][1])){
+                    if(Objects.equals(XO, tabuleiro[i][2])){
+                        return String.format("O player %s ganhou na horizontal", playerName);
                     }
                 }
             }
         }
-        return false;
+        return "";
     }
-    boolean naSemiCruzEsqDir(String player, String[][] tabuleiro){
-        if(Objects.equals(player, tabuleiro[0][0])){
-            if(Objects.equals(player, tabuleiro[1][1])){
-
-                if (Objects.equals(player, tabuleiro[2][2])) {
-                    System.out.printf("O player %s ganhou na na diagonal esquerda para direita%n", player);
-                    return true;
+    String naSemiCruzEsqDir(String XO, String[][] tabuleiro, String playerName){
+        if(Objects.equals(XO, tabuleiro[0][0])){
+            if(Objects.equals(XO, tabuleiro[1][1])){
+                if (Objects.equals(XO, tabuleiro[2][2])) {
+                    return String.format("O player %s ganhou na na diagonal esquerda para direita", playerName);
                 }
             }
         }
-        return false;
+        return "";
     }
-    boolean naSemiCruzDirEsq(String player, String[][] tabuleiro){
-        if(Objects.equals(player, tabuleiro[0][2])){
-            if(Objects.equals(player, tabuleiro[1][1])){
-
-                if (Objects.equals(player, tabuleiro[2][0])){
-                    System.out.println(String.format("O player %s ganhou na diagonal direita para esquerda", player));
-                    return true;
+    String naSemiCruzDirEsq(String XO, String[][] tabuleiro, String playerName){
+        if(Objects.equals(XO, tabuleiro[0][2])){
+            if(Objects.equals(XO, tabuleiro[1][1])){
+                if (Objects.equals(XO, tabuleiro[2][0])){
+                    return String.format("O player %s ganhou na diagonal direita para esquerda", playerName);
                 }
             }
         }
-        return false;
+        return "";
     }
-    boolean temVelha(String[][] tabuleiro){
-        int counter = 0;
+    String temVelha(String[][] tabuleiro){
+        int counter = 1;
         for (String[] strings : tabuleiro) {
             for (int j = 0; j < tabuleiro.length; j++) {
                 if (Objects.equals(String.valueOf(counter++), strings[j])) {
-                    return true;
+                    return "";
                 }
             }
         }
-        return false;
+        return "DEU EMPATE";
     }
 }

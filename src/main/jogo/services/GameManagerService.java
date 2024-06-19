@@ -3,6 +3,7 @@ package src.main.jogo.services;
 import src.main.jogo.models.*;
 import src.main.jogo.net.ClientHandler;
 import src.main.jogo.net.packets.SendGameBoardPacket;
+import src.main.jogo.net.packets.SendWinLoseOrTiePacket;
 import src.main.jogo.views.GameManagerView;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -104,13 +105,22 @@ public class GameManagerService {
 
     }
 
-    public boolean handleVerifyBoard(GameMatch gameMatchUpdated, String XO) {
-        return gameVerifyBoardService.naHorizontal(XO, gameMatchUpdated.getGameBoard().getGameBoard()) ||
-                gameVerifyBoardService.naVertical(XO, gameMatchUpdated.getGameBoard().getGameBoard()) ||
-                gameVerifyBoardService.naSemiCruzDirEsq(XO, gameMatchUpdated.getGameBoard().getGameBoard()) ||
-                gameVerifyBoardService.naSemiCruzEsqDir(XO, gameMatchUpdated.getGameBoard().getGameBoard());
+    public String handleVerifyBoard(GameMatch gameMatchUpdated, String XO, String playerName) {
+        if(!gameVerifyBoardService.naHorizontal(XO, gameMatchUpdated.getGameBoard().getGameBoard(), playerName).isEmpty()){
+            return gameVerifyBoardService.naHorizontal(XO, gameMatchUpdated.getGameBoard().getGameBoard(), playerName);
+        }
+        if(!gameVerifyBoardService.naVertical(XO, gameMatchUpdated.getGameBoard().getGameBoard(), playerName).isEmpty()){
+            return gameVerifyBoardService.naVertical(XO, gameMatchUpdated.getGameBoard().getGameBoard(), playerName);
+        }
+        if(!gameVerifyBoardService.naSemiCruzDirEsq(XO, gameMatchUpdated.getGameBoard().getGameBoard(), playerName).isEmpty()){
+            return gameVerifyBoardService.naSemiCruzDirEsq(XO, gameMatchUpdated.getGameBoard().getGameBoard(), playerName);
+        }
+        if (!gameVerifyBoardService.naSemiCruzEsqDir(XO, gameMatchUpdated.getGameBoard().getGameBoard(), playerName).isEmpty()){
+            return gameVerifyBoardService.naSemiCruzEsqDir(XO, gameMatchUpdated.getGameBoard().getGameBoard(), playerName);
+        }
+        if (!gameVerifyBoardService.temVelha(gameMatchUpdated.getGameBoard().getGameBoard()).isEmpty()){
+            return gameVerifyBoardService.temVelha(gameMatchUpdated.getGameBoard().getGameBoard());
+        }
+        return null;
     }
-    //Apos corrigir, comecar a logica de que cada player tera sua vez de jogar.
-
-
 }

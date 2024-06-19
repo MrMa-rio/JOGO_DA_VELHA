@@ -8,8 +8,8 @@ public class GameMovePlayerView {
     public String choicePositionPlayer(){
         scanner.reset();
         System.out.println("Escolha uma posicao: ");
-        System.out.println("--> ");
-        return scanner.next();
+        System.out.print("--> ");
+        return scanner.nextLine();
     }
     public String choiceXO(String previousXO){
         String choice = "0";
@@ -19,7 +19,7 @@ public class GameMovePlayerView {
                 System.out.println("Escolha entre X e O:");
                 System.out.println("[1] X");
                 System.out.println("[2] O");
-                System.out.println("--> ");
+                System.out.print("--> ");
                 scanner.reset();
                 choice = scanner.nextLine();
                 switch (choice){

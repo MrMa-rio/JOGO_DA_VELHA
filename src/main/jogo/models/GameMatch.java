@@ -9,6 +9,7 @@ public class GameMatch implements Serializable {
     private GameRoom gameRoom;
     private GameBoard gameBoard;
     private boolean isStart;
+    private boolean isClosed;
     ArrayList<PlayerInMatch> listPlayers;
     public GameMatch(){
         this.gameRoom = new GameRoom();
@@ -21,6 +22,13 @@ public class GameMatch implements Serializable {
     }
     public boolean getIsStart(){
         return isStart;
+    }
+
+    public void setClosed(boolean closed) {
+        isClosed = closed;
+    }
+    public boolean getIsClosed(){
+        return isClosed;
     }
 
     public GameBoard getGameBoard() {

@@ -6,9 +6,8 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 import src.main.jogo.net.packets.ClientPacket;
-import src.main.jogo.net.packets.DisconnectPacket;
+import src.main.jogo.net.packets.SendDisconnectPacket;
 import src.main.jogo.net.packets.SendClientPacket;
-import src.main.jogo.net.packets.SendMessagePacket;
 
 public class ClientHandler implements Runnable {
     private boolean isConnected;
@@ -86,7 +85,7 @@ public class ClientHandler implements Runnable {
     public void disconnect() {
         System.out.println("UM JOGADOR SE DESCONECTOU");
         isConnected = false;
-        server.sendUpdateForOthers(this, new DisconnectPacket("UM PLAYER DESCONECTOU"));
+        server.sendUpdateForOthers(this, new SendDisconnectPacket("UM PLAYER DESCONECTOU"));
         try {
             socket.close();
             inputStream.close();

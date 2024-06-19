@@ -9,6 +9,8 @@ import src.main.jogo.net.packets.SendPlayerPacket;
 import src.main.jogo.utils.RandomStringGenerator;
 import src.main.jogo.views.GameModeOnlineView;
 
+import java.net.ConnectException;
+
 public class GameModeOnlineService {
     private final GameModeOnlineView gameModeOnlineView;
     GameRoom gameRoom = new GameRoom();
@@ -18,9 +20,14 @@ public class GameModeOnlineService {
     public GameModeOnlineService(){
         this.gameModeOnlineView = new GameModeOnlineView();
     }
-    public void initializeClient(String ipAdress, int port){
-        client = new Client(ipAdress, port);
-        client.run();
+    public boolean initializeClient(String ipAdress, int port){
+        try{
+            client = new Client(ipAdress, port);
+            client.run();
+            return true;
+        }catch (RuntimeException e){
+            return false;
+        }
     }
 
     public static Client getClient() {

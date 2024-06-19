@@ -2,6 +2,7 @@ package src.main.jogo.net;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.util.UUID;
 
@@ -25,7 +26,8 @@ public class Client implements Runnable {
             socket = new Socket(ipAddress, port);
             inputStream = new ObjectInputStream(socket.getInputStream());
             outputStream = new ObjectOutputStream(socket.getOutputStream());
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new RuntimeException(e);
         }
         this.gamePlayerService = new GamePlayerService();
@@ -119,14 +121,19 @@ public class Client implements Runnable {
             System.out.println("Faca sua jogada");
             gamePlayerService.handleMovePlayer(XO, hostXO );
         }
-        else if (packet instanceof final DisconnectPacket disconnectPacket) {
-            System.out.println(disconnectPacket.getMessage());
+        else if (packet.getClass() == SendWinLoseOrTiePacket.class) {
+            if(((SendWinLoseOrTiePacket) packet).getMessage() != null){
+                System.out.println(((SendWinLoseOrTiePacket) packet).getMessage());
+                sendPacket(new SendCloseGameMatchPacket());
+            }
+        } else if (packet instanceof final SendDisconnectPacket sendDisconnectPacket) {
+            System.out.println(sendDisconnectPacket.getMessage());
         }
     }
     public void disconnect() {
         System.out.println("DESCONEXAO PELO SERVIDOR ");
         isConnected = false;
-        sendPacket(new DisconnectPacket("DESCONEXAO PELO SERVIDOR"));
+        sendPacket(new SendDisconnectPacket("DESCONEXAO PELO SERVIDOR"));
         try {
             socket.close();
             inputStream.close();

@@ -130,20 +130,30 @@ public class Server implements Runnable {
             String position = ((SendStateGameBoardPacket) packet).getPosition();
             String previousPlayerXO = ((SendStateGameBoardPacket) packet).getPlayerInMatch().getXO(); //Peca do player anterior
             String previousPlayerId = ((SendStateGameBoardPacket) packet).getPlayerInMatch().getPlayer().playerId(); //ID do player anterior
+            String previousPlayerName = ((SendStateGameBoardPacket) packet).getPlayerInMatch().getPlayer().playerName();
             String codeRoom = gameMatch.getGameRoom().getCodeRoom();
             gameManagerService.getGameMatchInList(codeRoom).getPlayerInListPlayersById(previousPlayerId).setXO(previousPlayerXO);
             String nextPlayerId = gameMatch.getNextPlayer(previousPlayerId); //Passando player anterior para que ele descubra o proximo player
             PlayerInMatch nextPlayer = gameManagerService.getGameMatchInList(codeRoom).getPlayerInListPlayersById(nextPlayerId);
             GameMatch gameMatchUpdated = gameManagerService.handleUpdateGameMatch(codeRoom, position, previousPlayerXO);
-            if(gameManagerService.handleVerifyBoard(gameMatchUpdated, previousPlayerXO)) System.out.println("Alguem ganhou aqui...");
+            String verifyGameBoard = gameManagerService.handleVerifyBoard(gameMatchUpdated, previousPlayerXO, previousPlayerName);
+            if(verifyGameBoard != null && !verifyGameBoard.isEmpty()) gameMatchUpdated.setClosed(true);
+            sendUpdateByClientHandlerId(previousPlayerId, new SendWinLoseOrTiePacket(verifyGameBoard, gameMatchUpdated));
+            sendUpdateByClientHandlerId(nextPlayerId, new SendWinLoseOrTiePacket(verifyGameBoard, gameMatchUpdated));
             gameManagerService.handleUpdateGameMatchForPlayers(gameMatchUpdated, clientHandlers);
-            sendUpdateByClientHandlerId(nextPlayerId, new SendStateGameBoardPacket(nextPlayer, codeRoom , position, previousPlayerXO ));
+            if(!gameMatchUpdated.getIsClosed()){
+                sendUpdateByClientHandlerId(nextPlayerId, new SendStateGameBoardPacket(nextPlayer, codeRoom , position, previousPlayerXO ));
+            }
         }
-        else if (packet instanceof final DisconnectPacket disconnectPacket) {
+        else if (packet.getClass() == SendCloseGameMatchPacket.class) {
+
+            System.out.println("FECHANDO PARTIDA...");
+
+        } else if (packet instanceof final SendDisconnectPacket sendDisconnectPacket) {
             clientHandler.disconnect();
             System.out.println("REMOVE DADOS DO JOGADOR");
             clientHandlers.remove(clientHandler);
-            sendUpdateForOthers(clientHandler, disconnectPacket);
+            sendUpdateForOthers(clientHandler, sendDisconnectPacket);
         }
     }
     private void sendUpdatesToAll(ClientPacket packet) {

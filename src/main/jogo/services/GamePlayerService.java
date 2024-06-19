@@ -25,10 +25,6 @@ public class GamePlayerService {
         GameModeOnlineService.getClient().sendPacket(new SendStartedGameMatchPacket(gameMatch));
     }
 
-    public void handleChoicePosition() {
-       gameMatchService.handleChoicePosition();
-    }
-
     public void handleMovePlayer(String XO, String hostXO) {
         String codeRoom = gameMatchService.getGameMatch().getGameRoom().getCodeRoom();
         String playerId = GameModeOnlineService.getClient().getClientId();

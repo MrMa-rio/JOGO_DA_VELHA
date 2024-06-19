@@ -30,6 +30,10 @@ public class GameMatchService {
     }
     public String handleChoicePosition(){
         String position = gameMovePlayerView.choicePositionPlayer();
+        while(!gameMatch.getGameBoard().isValidPosition(position)){
+            System.out.println("posicao invalida!!");
+            position = gameMovePlayerView.choicePositionPlayer();
+        }
         return position;
     }
     public String handleChoiceXO(String hostXO){

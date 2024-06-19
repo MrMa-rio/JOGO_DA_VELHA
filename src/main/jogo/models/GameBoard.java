@@ -16,10 +16,10 @@ public class GameBoard implements Serializable {
         this.gameBoard = gameBoard;
     }
     public void setPosition(String position, String XO){
-        String player = position;
+
         for (String[] a : gameBoard) {
             for (int j = 0; j < gameBoard.length; j++) {
-                if (Objects.equals((player), a[j])) {
+                if (Objects.equals((position), a[j])) {
                     a[j] = XO;
                     break;
                 }
@@ -28,5 +28,16 @@ public class GameBoard implements Serializable {
     }
     public String getPosition(int x, int y){
         return gameBoard[x][y];
+    }
+
+    public boolean isValidPosition(String position) {
+        for (String[] a : gameBoard) {
+            for (int j = 0; j < gameBoard.length; j++) {
+                if (Objects.equals((position), a[j])) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
