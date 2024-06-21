@@ -7,7 +7,6 @@ public class SendStartingGameMatchPacket extends ClientPacket {
     public SendStartingGameMatchPacket(GameMatch gameMatch){
         this.gameMatch = gameMatch;
     }
-
     public GameMatch getGameMatch() {
         return gameMatch;
     }

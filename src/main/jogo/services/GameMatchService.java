@@ -2,7 +2,6 @@ package src.main.jogo.services;
 
 import src.main.jogo.models.GameBoard;
 import src.main.jogo.models.GameMatch;
-import src.main.jogo.models.GameRoom;
 import src.main.jogo.views.GameBoardView;
 import src.main.jogo.views.GameMatchView;
 import src.main.jogo.views.GameMovePlayerView;

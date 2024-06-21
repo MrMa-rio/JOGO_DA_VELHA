@@ -7,7 +7,6 @@ public class SendGameBoardPacket extends ClientPacket {
     public SendGameBoardPacket(GameBoard gameBoard){
         this.gameBoard = gameBoard;
     }
-
     public GameBoard getGameBoard() {
         return gameBoard;
     }

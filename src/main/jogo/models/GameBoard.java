@@ -16,7 +16,6 @@ public class GameBoard implements Serializable {
         this.gameBoard = gameBoard;
     }
     public void setPosition(String position, String XO){
-
         for (String[] a : gameBoard) {
             for (int j = 0; j < gameBoard.length; j++) {
                 if (Objects.equals((position), a[j])) {
@@ -26,10 +25,6 @@ public class GameBoard implements Serializable {
             }
         }
     }
-    public String getPosition(int x, int y){
-        return gameBoard[x][y];
-    }
-
     public boolean isValidPosition(String position) {
         for (String[] a : gameBoard) {
             for (int j = 0; j < gameBoard.length; j++) {

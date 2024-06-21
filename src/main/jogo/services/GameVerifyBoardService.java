@@ -1,7 +1,5 @@
 package src.main.jogo.services;
 
-import src.main.jogo.net.packets.SendWinLoseOrTiePacket;
-
 import java.util.Objects;
 
 public class GameVerifyBoardService {

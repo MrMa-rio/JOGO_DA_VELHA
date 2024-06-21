@@ -2,7 +2,6 @@ package src.main.jogo.net;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.ConnectException;
 import java.net.Socket;
 import java.util.UUID;
 
@@ -10,6 +9,7 @@ import src.main.jogo.models.GameMatch;
 import src.main.jogo.models.GameRoom;
 import src.main.jogo.net.packets.*;
 import src.main.jogo.services.GamePlayerService;
+import src.main.jogo.views.GameManagerView;
 
 public class Client implements Runnable {
     private boolean isConnected;
@@ -40,24 +40,13 @@ public class Client implements Runnable {
     public void run() {
         isConnected = true;
         startRead = new Thread(this::startReadLoop);
-        //startWrite = new Thread(this::startWriteLoop);
         startRead.start();
-        //startWrite.start();
     }
     private void initialClientCommunication() {
         try {
             outputStream.writeObject(new SendClientPacket(getClientId()));
         } catch (final IOException e) {
             e.printStackTrace();
-        }
-    }
-    private void startWriteLoop() {
-        while (isConnected) {
-            try {
-                //sendPacket(new SendMessagePacket(scanner.nextLine()));
-            }catch ( Exception e) {
-                throw new RuntimeException(e);
-            }
         }
     }
     private void startReadLoop() {
@@ -98,6 +87,9 @@ public class Client implements Runnable {
         else if (packet instanceof final SendClientPacket sendClientPacket) {
             this.clientId = sendClientPacket.getClientId();
         }
+        else if(packet.getClass() == SendGetGameRoomsPacket.class){
+            gamePlayerService.handleShowGameRooms(((SendGetGameRoomsPacket) packet).getGameRooms());
+        }
         else if (packet instanceof final SendGameRoomPacket sendGameRoomPacket){
             GameRoom gameRoom = sendGameRoomPacket.getGameRoom();
             gamePlayerService.handleGameRoomExist(gameRoom);
@@ -126,9 +118,17 @@ public class Client implements Runnable {
                 System.out.println(((SendWinLoseOrTiePacket) packet).getMessage());
                 sendPacket(new SendCloseGameMatchPacket());
             }
-        } else if (packet instanceof final SendDisconnectPacket sendDisconnectPacket) {
+        }
+        else if (packet.getClass() == SendQuitGameMatchPacket.class){
+            GameManagerView gameManagerView = new GameManagerView();
+            System.out.println("FINALIZANDO PARTIDA");
+            //gameManagerView.startGame();
+        }
+
+        else if (packet instanceof final SendDisconnectPacket sendDisconnectPacket) {
             System.out.println(sendDisconnectPacket.getMessage());
         }
+
     }
     public void disconnect() {
         System.out.println("DESCONEXAO PELO SERVIDOR ");

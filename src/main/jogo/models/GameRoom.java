@@ -5,7 +5,6 @@ import java.io.Serializable;
 public class GameRoom implements Serializable {
     private String codeRoom;
     private String hostId;
-
     public void setCodeRoom(String codeRoom) {
         this.codeRoom = codeRoom;
     }

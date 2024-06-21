@@ -5,7 +5,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Objects;
-
 import src.main.jogo.models.GameMatch;
 import src.main.jogo.models.GameRoom;
 import src.main.jogo.models.Player;
@@ -93,6 +92,9 @@ public class Server implements Runnable {
                 throw new RuntimeException(e);
             }
         }
+        else if (packet.getClass() == SendGetGameRoomsPacket.class) {
+            sendUpdates(clientHandler, new SendGetGameRoomsPacket(gameManagerService.getListGameRooms()));
+        }
         else if(packet instanceof final SendEnterRoomPacket sendEnterRoomPacket){
             try {
                 String codeRoom = sendEnterRoomPacket.getCodeRoom();
@@ -100,7 +102,6 @@ public class Server implements Runnable {
                         + clientHandler.getClientId()
                         + "\n" + "quer entrar em uma sala com o nome de: "
                         + codeRoom);
-
                 GameRoom gameRoom = gameManagerService.existRoom(codeRoom);
                 sendUpdates(clientHandler, new SendGameRoomPacket(gameRoom));
                 if(gameRoom == null) return;
@@ -125,7 +126,6 @@ public class Server implements Runnable {
         }
         else if (packet.getClass() == SendStateGameBoardPacket.class) {
             System.out.println("Recebendo estado do tabuleiro...");
-
             GameMatch gameMatch = gameManagerService.getGameMatchInList(((SendStateGameBoardPacket) packet).getCodeRoom());
             String position = ((SendStateGameBoardPacket) packet).getPosition();
             String previousPlayerXO = ((SendStateGameBoardPacket) packet).getPlayerInMatch().getXO(); //Peca do player anterior
@@ -138,17 +138,16 @@ public class Server implements Runnable {
             GameMatch gameMatchUpdated = gameManagerService.handleUpdateGameMatch(codeRoom, position, previousPlayerXO);
             String verifyGameBoard = gameManagerService.handleVerifyBoard(gameMatchUpdated, previousPlayerXO, previousPlayerName);
             if(verifyGameBoard != null && !verifyGameBoard.isEmpty()) gameMatchUpdated.setClosed(true);
-            sendUpdateByClientHandlerId(previousPlayerId, new SendWinLoseOrTiePacket(verifyGameBoard, gameMatchUpdated));
-            sendUpdateByClientHandlerId(nextPlayerId, new SendWinLoseOrTiePacket(verifyGameBoard, gameMatchUpdated));
+            sendUpdateByClientHandlerId(previousPlayerId, new SendWinLoseOrTiePacket(verifyGameBoard));
+            sendUpdateByClientHandlerId(nextPlayerId, new SendWinLoseOrTiePacket(verifyGameBoard));
             gameManagerService.handleUpdateGameMatchForPlayers(gameMatchUpdated, clientHandlers);
             if(!gameMatchUpdated.getIsClosed()){
                 sendUpdateByClientHandlerId(nextPlayerId, new SendStateGameBoardPacket(nextPlayer, codeRoom , position, previousPlayerXO ));
             }
         }
         else if (packet.getClass() == SendCloseGameMatchPacket.class) {
-
             System.out.println("FECHANDO PARTIDA...");
-
+            sendUpdates(clientHandler, new SendQuitGameMatchPacket());
         } else if (packet instanceof final SendDisconnectPacket sendDisconnectPacket) {
             clientHandler.disconnect();
             System.out.println("REMOVE DADOS DO JOGADOR");

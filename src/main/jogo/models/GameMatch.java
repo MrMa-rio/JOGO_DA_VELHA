@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class GameMatch implements Serializable {
     private GameRoom gameRoom;
-    private GameBoard gameBoard;
+    private final GameBoard gameBoard;
     private boolean isStart;
     private boolean isClosed;
     ArrayList<PlayerInMatch> listPlayers;
@@ -23,7 +23,6 @@ public class GameMatch implements Serializable {
     public boolean getIsStart(){
         return isStart;
     }
-
     public void setClosed(boolean closed) {
         isClosed = closed;
     }
@@ -40,9 +39,6 @@ public class GameMatch implements Serializable {
     }
     public void setGameRoom(GameRoom gameRoom) {
         this.gameRoom = gameRoom;
-    }
-    public void setListPlayers(ArrayList<PlayerInMatch> listPlayers) {
-        this.listPlayers = listPlayers;
     }
     public ArrayList<PlayerInMatch> getListPlayers() {
         return listPlayers;

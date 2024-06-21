@@ -1,17 +1,14 @@
 package src.main.jogo.net.packets;
 
-import src.main.jogo.models.GameBoard;
-import src.main.jogo.models.Player;
 import src.main.jogo.models.PlayerInMatch;
 
 public class SendStateGameBoardPacket extends ClientPacket {
-    public static final long serialVersionUID = -710902470934092114L;
+    private static final long serialVersionUID = -710902470934092114L;
     private String position = "";
     private String codeRoom;
-    private PlayerInMatch playerInMatch;
+    private final PlayerInMatch playerInMatch;
     private String hostXO;
-    private GameBoard gameBoard;
-    private boolean isFirstMove;
+    private final boolean isFirstMove;
 
     public SendStateGameBoardPacket(PlayerInMatch playerInMatch){
         this.isFirstMove = true;
@@ -23,10 +20,6 @@ public class SendStateGameBoardPacket extends ClientPacket {
         this.playerInMatch = playerInMatch;
         this.isFirstMove = false;
         this.hostXO = hostXO;
-
-    }
-    public SendStateGameBoardPacket(GameBoard gameBoard){
-        this.gameBoard = gameBoard;
     }
     public String getPosition() {
         return position;
@@ -37,14 +30,9 @@ public class SendStateGameBoardPacket extends ClientPacket {
     public String getCodeRoom() {
         return codeRoom;
     }
-    public GameBoard getGameBoard() {
-        return gameBoard;
-    }
-
     public String getHostXO() {
         return hostXO;
     }
-
     public PlayerInMatch getPlayerInMatch() {
         return playerInMatch;
     }

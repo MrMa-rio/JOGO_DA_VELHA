@@ -8,11 +8,9 @@ public class PlayerInMatch implements Serializable {
     public PlayerInMatch(Player player){
         this.player = player;
     }
-
     public Player getPlayer() {
         return player;
     }
-
     public void setXO(String XO) {
         this.XO = XO;
     }

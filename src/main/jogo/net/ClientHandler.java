@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-
 import src.main.jogo.net.packets.ClientPacket;
 import src.main.jogo.net.packets.SendDisconnectPacket;
 import src.main.jogo.net.packets.SendClientPacket;
@@ -52,8 +51,6 @@ public class ClientHandler implements Runnable {
         isConnected = true;
         startReceiveMessageLoop();
     }
-
-    // client to server
     private void startReceiveMessageLoop() {
         while (isConnected) {
             try {
@@ -67,7 +64,6 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    // server to client
     public void sendUpdate(ClientPacket update) { //aqui poderia ser enviado o stateGame
         if (!isConnected) {
             return;

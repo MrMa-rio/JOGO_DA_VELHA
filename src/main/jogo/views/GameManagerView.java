@@ -3,7 +3,6 @@ package src.main.jogo.views;
 import src.main.jogo.controllers.GameManagerController;
 import src.main.jogo.models.GameRoom;
 import src.main.jogo.models.Player;
-
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -50,7 +49,7 @@ public class GameManagerView {
     public void startGame(){
         do{
             System.out.println("--------------------------------------------");
-            System.out.println("[1] NOVO JOGO OFFLINE <-");
+            System.out.println("[1] SALAS ONLINE <-");
             System.out.println("[2] NOVO JOGO ONLINE <-");
             System.out.println("[3] ENTRAR EM UMA SALA <-");
             System.out.println("[0] SAIR DO JOGO <-");
