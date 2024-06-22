@@ -2,7 +2,9 @@ package src.main.jogo.net;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.UUID;
 
 import src.main.jogo.models.GameMatch;
@@ -13,25 +15,35 @@ import src.main.jogo.views.GameManagerView;
 
 public class Client implements Runnable {
     private boolean isConnected;
-    private final Socket socket;
-    private final ObjectInputStream inputStream;
-    private final ObjectOutputStream outputStream;
+    private Socket socket;
+    private ObjectInputStream inputStream;
+    private ObjectOutputStream outputStream;
     private final GamePlayerService gamePlayerService;
+    private final String VARIABLE_IP_ADRESS_1 = "172.16.232.203";
+    private final String VARIABLE_IP_ADRESS_2 ="192.168.3.18";
     private String clientId = UUID.randomUUID().toString();
     private Thread startRead;
 
 
-    public Client( final String ipAddress, final int port) {
+    public Client() {
         try {
-            socket = new Socket(ipAddress, port);
-            inputStream = new ObjectInputStream(socket.getInputStream());
-            outputStream = new ObjectOutputStream(socket.getOutputStream());
+            try{
+                tryConnection(VARIABLE_IP_ADRESS_1);
+            }catch (SocketTimeoutException e){
+                tryConnection(VARIABLE_IP_ADRESS_2);
+            }
         }
         catch (IOException e) {
             throw new RuntimeException(e);
         }
         this.gamePlayerService = new GamePlayerService();
         initialClientCommunication();
+    }
+    public void tryConnection(String connection) throws IOException {
+        socket = new Socket();
+        socket.connect(new InetSocketAddress(connection, 1234), 100);
+        inputStream = new ObjectInputStream(socket.getInputStream());
+        outputStream = new ObjectOutputStream(socket.getOutputStream());
     }
     public String getClientId() {
         return clientId;
@@ -64,7 +76,7 @@ public class Client implements Runnable {
                 try {
                     clientPacket = (ClientPacket) inputStream.readObject();
                 } catch (IOException | ClassNotFoundException ex) {
-                    System.out.println(ex.getMessage());
+                    System.out.println(ex.getMessage() + "EITA");
                     throw new RuntimeException(ex);
                 }
                 processPacket(clientPacket); //Pode dar muito errado, foi analisado que as vezes o tick de leitura se esbarra com o tick de outro cliente gerando o erro stream active
@@ -116,13 +128,18 @@ public class Client implements Runnable {
         else if (packet.getClass() == SendWinLoseOrTiePacket.class) {
             if(((SendWinLoseOrTiePacket) packet).getMessage() != null){
                 System.out.println(((SendWinLoseOrTiePacket) packet).getMessage());
-                sendPacket(new SendCloseGameMatchPacket());
+                gamePlayerService.handleClosingGameRoom();
             }
         }
         else if (packet.getClass() == SendQuitGameMatchPacket.class){
             GameManagerView gameManagerView = new GameManagerView();
-            System.out.println("FINALIZANDO PARTIDA");
-            //gameManagerView.startGame();
+            System.out.println("Voltando para o menu Inicial");
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            gameManagerView.startGame();
         }
 
         else if (packet instanceof final SendDisconnectPacket sendDisconnectPacket) {

@@ -1,10 +1,7 @@
 package src.main.jogo.services;
 
 import src.main.jogo.models.*;
-import src.main.jogo.net.packets.SendEnterRoomPacket;
-import src.main.jogo.net.packets.SendGetGameRoomsPacket;
-import src.main.jogo.net.packets.SendStartedGameMatchPacket;
-import src.main.jogo.net.packets.SendStateGameBoardPacket;
+import src.main.jogo.net.packets.*;
 import src.main.jogo.views.GameMatchView;
 import src.main.jogo.views.GameModeOnlineView;
 
@@ -22,12 +19,13 @@ public class GamePlayerService {
         this.gameMatchView = new GameMatchView();
     }
     public void handleGameRoomExist(GameRoom gameRoom) {
-        if(gameRoom == null){
+        if(gameRoom == null || gameRoom.getIsClosed()){
             System.out.println("Codigo de sala invalido!");
             gameModeOnlineService.enterRoom();
             return;
         }
         gameModeOnlineService.setGameRoom(gameRoom.getCodeRoom(), gameRoom.getHostId());
+        System.out.println("Entrando em uma sala...");
     }
     public void handleStartingMatching(GameMatch gameMatch) {
         gameMatchService = new GameMatchService(gameMatch);
@@ -47,13 +45,14 @@ public class GamePlayerService {
     }
 
     public void handleStartingPlayer(){
-        String ipAdress;
-        int port;
-        do{
-            ipAdress = gameModeOnlineView.setIpAdress();
-            port = gameModeOnlineView.setPort();
-        } while(!gameModeOnlineService.initializeClient(ipAdress, port));
+
+        while(true){
+            if(gameModeOnlineService.initializeClient()){
+                break;
+            }
+        }
         gameModeOnlineService.createPlayer();
+
     }
     public void handleCreatingRoom(){
         gameModeOnlineService.createRoom();
@@ -78,5 +77,8 @@ public class GamePlayerService {
         }
         while (codeRoom == null);
         GameModeOnlineService.getClient().sendPacket(new SendEnterRoomPacket(codeRoom));
+    }
+    public void handleClosingGameRoom(){
+        GameModeOnlineService.getClient().sendPacket(new SendCloseGameRoomPacket(gameModeOnlineService.getGameRoom().getCodeRoom()));
     }
 }

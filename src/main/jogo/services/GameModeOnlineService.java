@@ -11,16 +11,18 @@ import src.main.jogo.views.GameModeOnlineView;
 
 public class GameModeOnlineService {
     private final GameModeOnlineView gameModeOnlineView;
-    GameRoom gameRoom = new GameRoom();
+    private final GameRoom gameRoom;
     private static Client client;
     private Player player;
 
     public GameModeOnlineService(){
+
         this.gameModeOnlineView = new GameModeOnlineView();
+        this.gameRoom = new GameRoom();
     }
-    public boolean initializeClient(String ipAdress, int port){
+    public boolean initializeClient(){
         try{
-            client = new Client(ipAdress, port);
+            client = new Client();
             client.run();
             return true;
         }catch (RuntimeException e){
@@ -30,6 +32,10 @@ public class GameModeOnlineService {
 
     public static Client getClient() {
         return client;
+    }
+
+    public GameRoom getGameRoom() {
+        return gameRoom;
     }
 
     public void createPlayer(){

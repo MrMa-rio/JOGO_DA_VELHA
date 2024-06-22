@@ -13,12 +13,9 @@ public class GameManagerController {
 
         switch (gameModeSelected){
             case 1:
-
                 gamePlayerService.handleGetGameRooms();
-
                 break;
             case 2:
-
                 gamePlayerService.handleCreatingRoom();
                 System.out.println("Entrando em novo jogo online...");
                 break;
@@ -26,7 +23,6 @@ public class GameManagerController {
 
                 System.out.println("Entrando em um jogo online...");
                 gamePlayerService.handleEnteringRoom();
-                System.out.println("Entrando em uma sala...");
                 break;
             case 0:
                 System.out.println("Saindo do jogo...");

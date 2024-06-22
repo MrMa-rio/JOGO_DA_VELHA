@@ -47,6 +47,7 @@ public class GameManagerView {
         System.out.println("Dados das salas recebido com sucesso!!");
     }
     public void startGame(){
+        int choice;
         do{
             System.out.println("--------------------------------------------");
             System.out.println("[1] SALAS ONLINE <-");
@@ -55,7 +56,7 @@ public class GameManagerView {
             System.out.println("[0] SAIR DO JOGO <-");
             System.out.println("--------------------------------------------");
             System.out.print("--> ");
-        } while(!gameManagerController.handleGameModelSelected(scanner.nextInt()));
-
+        } while(!gameManagerController.handleGameModelSelected(choice = scanner.nextInt()));
+        if (choice == 0) Runtime.getRuntime().exit(0);
     }
 }

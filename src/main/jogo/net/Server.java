@@ -104,7 +104,7 @@ public class Server implements Runnable {
                         + codeRoom);
                 GameRoom gameRoom = gameManagerService.existRoom(codeRoom);
                 sendUpdates(clientHandler, new SendGameRoomPacket(gameRoom));
-                if(gameRoom == null) return;
+                if(gameRoom == null || gameRoom.getIsClosed()) return;
                 GameMatch gameMatch = gameManagerService.handleStartingGameMatch(gameRoom, clientHandler.getClientId());
                 gameMatch.getListPlayers().forEach((player) -> {
                     sendUpdateByClientHandlerId(player.getPlayer().playerId(), new SendStartingGameMatchPacket(gameMatch));
@@ -145,8 +145,9 @@ public class Server implements Runnable {
                 sendUpdateByClientHandlerId(nextPlayerId, new SendStateGameBoardPacket(nextPlayer, codeRoom , position, previousPlayerXO ));
             }
         }
-        else if (packet.getClass() == SendCloseGameMatchPacket.class) {
-            System.out.println("FECHANDO PARTIDA...");
+        else if (packet.getClass() == SendCloseGameRoomPacket.class) {
+            gameManagerService.handleClosingGameRoom(((SendCloseGameRoomPacket) packet).getCodeRoom());
+            System.out.println("FECHANDO SALA DA PARTIDA...");
             sendUpdates(clientHandler, new SendQuitGameMatchPacket());
         } else if (packet instanceof final SendDisconnectPacket sendDisconnectPacket) {
             clientHandler.disconnect();

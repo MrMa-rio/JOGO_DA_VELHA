@@ -46,11 +46,20 @@ public class GameManagerService {
     public GameMatch getGameMatchInList(String codeRoom){
         AtomicReference<GameMatch> gameMatchAtomicReference = new AtomicReference<>();
         listGameMatches.forEach((gameMatchInList) -> {
-            if (Objects.equals(gameMatchInList.getGameRoom().getCodeRoom(), codeRoom)){
+            if (!gameMatchInList.getIsClosed() && Objects.equals(gameMatchInList.getGameRoom().getCodeRoom(), codeRoom)){
                 gameMatchAtomicReference.set(gameMatchInList);
             }
         });
         return gameMatchAtomicReference.get();
+    }
+    public GameRoom getGameRoomInList(String codeRoom){
+        AtomicReference<GameRoom> gameRoomAtomicReference = new AtomicReference<>();
+        listGameRooms.forEach((gameRoomInList) -> {
+            if (!gameRoomInList.getIsClosed() && Objects.equals(gameRoomInList.getCodeRoom(), codeRoom)){
+                gameRoomAtomicReference.set(gameRoomInList);
+            }
+        });
+        return gameRoomAtomicReference.get();
     }
     public void showListGameRooms(){
         gameManagerView.showListGameRooms(listGameRooms);
@@ -121,5 +130,13 @@ public class GameManagerService {
             return gameVerifyBoardService.temVelha(gameMatchUpdated.getGameBoard().getGameBoard());
         }
         return null;
+    }
+
+    public void handleClosingGameRoom(String codeRoom) {
+        listGameRooms.forEach((gameRoom) -> {
+            if (Objects.equals(gameRoom.getCodeRoom(), codeRoom)){
+                gameRoom.setClosed(true);
+            }
+        });
     }
 }

@@ -18,8 +18,11 @@ public class GameMatchView {
             System.out.println("NENHUMA SALA POR AQUI...!");
         }
         gameRooms.forEach((room) -> {
-            System.out.println("SALA " + (gameRooms.indexOf(room) + 1 ) + ": " + room.getCodeRoom());
-            System.out.println("HOST: " + room.getHostId());
+
+            if(!room.getIsClosed()){
+                System.out.println("SALA " + (gameRooms.indexOf(room) + 1 ) + ": " + room.getCodeRoom());
+                System.out.println("HOST: " + room.getHostId());
+            }
             System.out.println("--------------------------------------------");
         });
         System.out.println("Dados das salas recebido com sucesso!!");
@@ -27,12 +30,11 @@ public class GameMatchView {
     }
     public String choiceGameMatch(ArrayList<GameRoom> gameRooms){
         AtomicReference<String> codeRoom = new AtomicReference<>("");
-
         System.out.println("Escolha uma sala");
         System.out.print("--> ");
         int choice = scanner.nextInt();
         gameRooms.forEach((room) -> {
-            if((gameRooms.indexOf(room) + 1) == choice){
+            if(!room.getIsClosed() && (gameRooms.indexOf(room) + 1) == choice){
                 codeRoom.set(room.getCodeRoom());
             }
         });
