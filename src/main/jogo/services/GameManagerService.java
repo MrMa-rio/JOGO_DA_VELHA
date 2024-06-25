@@ -2,7 +2,9 @@ package src.main.jogo.services;
 
 import src.main.jogo.models.*;
 import src.main.jogo.net.ClientHandler;
+import src.main.jogo.net.packets.ClientPacket;
 import src.main.jogo.net.packets.SendGameBoardPacket;
+import src.main.jogo.net.packets.SendStartingGameMatchPacket;
 import src.main.jogo.views.GameManagerView;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -105,7 +107,7 @@ public class GameManagerService {
         listPlayers.forEach((player) -> {
             clientHandlers.forEach((clientHandler) -> {
                 if(Objects.equals(clientHandler.getClientId(), player.getPlayer().playerId())){
-                    clientHandler.sendUpdate(new SendGameBoardPacket(gameMatch.getGameBoard()));
+                    clientHandler.sendPacket(new SendGameBoardPacket(gameMatch.getGameBoard()));
                 }
 
             });
@@ -137,6 +139,17 @@ public class GameManagerService {
             if (Objects.equals(gameRoom.getCodeRoom(), codeRoom)){
                 gameRoom.setClosed(true);
             }
+        });
+    }
+
+
+    public void teste(GameRoom gameRoom, String playerId) {
+        if(gameRoom == null || gameRoom.getIsClosed()) {
+            return;
+        }
+        GameMatch gameMatch = handleStartingGameMatch(gameRoom, playerId);
+        gameMatch.getListPlayers().forEach((player) -> {
+            //sendUpdateByClientHandlerId(player.getPlayer().playerId(), new SendStartingGameMatchPacket(gameMatch));
         });
     }
 }

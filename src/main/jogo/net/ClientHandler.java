@@ -22,15 +22,12 @@ public class ClientHandler implements Runnable {
     public ClientHandler(final Server server, final Socket socket) {
         this.server = server;
         this.socket = socket;
-
-
         try {
             this.outputStream = new ObjectOutputStream(socket.getOutputStream());
             this.inputStream = new ObjectInputStream(socket.getInputStream());
         } catch (final IOException e) {
             e.printStackTrace();
         }
-
         initialClientCommunication();
     }
 
@@ -64,12 +61,12 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    public void sendUpdate(ClientPacket update) { //aqui poderia ser enviado o stateGame
+    public void sendPacket(ClientPacket packet) {
         if (!isConnected) {
             return;
         }
         try {
-            outputStream.writeObject(update);
+            outputStream.writeObject(packet);
             outputStream.reset();
 
         } catch (final IOException e) {
@@ -77,7 +74,6 @@ public class ClientHandler implements Runnable {
             disconnect();
         }
     }
-
     public void disconnect() {
         System.out.println("UM JOGADOR SE DESCONECTOU");
         isConnected = false;

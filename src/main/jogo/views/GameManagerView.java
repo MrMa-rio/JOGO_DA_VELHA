@@ -16,8 +16,8 @@ public class GameManagerView {
     public void receiveGuestPlayerConnected(Player guestPlayer){
         System.out.println("------------------------------------------");
         System.out.println("Recebendo dados de um Player...");
-        System.out.println("Player ID: " + guestPlayer.playerId());
-        System.out.println("PlayerTag: " + guestPlayer.playerName());
+        System.out.println(STR."Player ID: \{guestPlayer.playerId()}");
+        System.out.println(STR."PlayerTag: \{guestPlayer.playerName()}");
         System.out.println("--------------------------------------------");
     }
     public void showListGuestPlayersConnected(ArrayList<Player> guestPlayers){
@@ -27,8 +27,8 @@ public class GameManagerView {
             System.out.println("Sem Player conectados!");
         }
         guestPlayers.forEach((guest) -> {
-            System.out.println("PlayerId: " + guest.playerId());
-            System.out.println("PlayerName: " + guest.playerName());
+            System.out.println(STR."PlayerId: \{guest.playerId()}");
+            System.out.println(STR."PlayerName: \{guest.playerName()}");
             System.out.println("--------------------------------------------");
         });
         System.out.println("Dados dos Jogadores recebido com sucesso!!");
@@ -40,8 +40,8 @@ public class GameManagerView {
             System.out.println("Sem Salas Disponiveis!");
         }
         gameRooms.forEach((room) -> {
-            System.out.println("SALA " + (gameRooms.indexOf(room) + 1 ) + ": " + room.getCodeRoom());
-            System.out.println("HOST: " + room.getHostId());
+            System.out.println(STR."SALA \{gameRooms.indexOf(room) + 1}: \{room.getCodeRoom()}");
+            System.out.println(STR."HOST: \{room.getHostId()}");
             System.out.println("--------------------------------------------");
         });
         System.out.println("Dados das salas recebido com sucesso!!");
@@ -58,5 +58,13 @@ public class GameManagerView {
             System.out.print("--> ");
         } while(!gameManagerController.handleGameModelSelected(choice = scanner.nextInt()));
         if (choice == 0) Runtime.getRuntime().exit(0);
+    }
+
+    public void showMessage(String clientId, String codeRoom) {
+        System.out.println(STR."O player \{clientId}\ncriou uma sala com o nome de: \{codeRoom}");
+    }
+
+    public void showMessageEnterRoom(String clientId, String codeRoom) {
+        System.out.println(STR."O player \{clientId}\nquer entrar em uma sala com o nome de: \{codeRoom}");
     }
 }

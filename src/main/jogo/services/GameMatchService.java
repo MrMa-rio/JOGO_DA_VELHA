@@ -8,12 +8,10 @@ import src.main.jogo.views.GameMovePlayerView;
 
 public class GameMatchService {
     private final GameMatch gameMatch;
-    private GameMatchView gameMatchView;
     private final GameBoardView gameBoardView;
     private final GameMovePlayerView gameMovePlayerView;
     public GameMatchService(GameMatch gameMatch){
         this.gameMatch = gameMatch;
-        this.gameMatchView = new GameMatchView();
         this.gameBoardView = new GameBoardView();
         this.gameMovePlayerView = new GameMovePlayerView();
     }

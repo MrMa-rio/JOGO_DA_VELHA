@@ -3,19 +3,16 @@ package src.main.jogo.services;
 import src.main.jogo.models.*;
 import src.main.jogo.net.packets.*;
 import src.main.jogo.views.GameMatchView;
-import src.main.jogo.views.GameModeOnlineView;
 
 import java.util.ArrayList;
 
 public class GamePlayerService {
     private final GameModeOnlineService gameModeOnlineService;
     private GameMatchService gameMatchService;
-    private final GameModeOnlineView gameModeOnlineView;
     private final GameMatchView gameMatchView;
 
     public GamePlayerService(){
         this.gameModeOnlineService = new GameModeOnlineService();
-        this.gameModeOnlineView = new GameModeOnlineView();
         this.gameMatchView = new GameMatchView();
     }
     public void handleGameRoomExist(GameRoom gameRoom) {
