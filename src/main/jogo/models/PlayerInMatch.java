@@ -2,14 +2,10 @@ package src.main.jogo.models;
 
 import java.io.Serializable;
 
-public class PlayerInMatch implements Serializable {
-    private final Player player;
+public class PlayerInMatch extends Player {
     private String XO = "";
-    public PlayerInMatch(Player player){
-        this.player = player;
-    }
-    public Player getPlayer() {
-        return player;
+    public PlayerInMatch(String playerId, String playerName){
+        super(playerId, playerName);
     }
     public void setXO(String XO) {
         this.XO = XO;

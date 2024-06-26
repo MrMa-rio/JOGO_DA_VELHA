@@ -77,7 +77,7 @@ public class ClientHandler implements Runnable {
     public void disconnect() {
         System.out.println("UM JOGADOR SE DESCONECTOU");
         isConnected = false;
-        server.sendUpdateForOthers(this, new SendDisconnectPacket("UM PLAYER DESCONECTOU"));
+        sendPacket(new SendDisconnectPacket("UM PLAYER DESCONECTOU"));
         try {
             socket.close();
             inputStream.close();

@@ -46,7 +46,7 @@ public class GameMatch implements Serializable {
     public String getNextPlayer(String playerId){
         AtomicReference<String> nextPlayer = new AtomicReference<>();
         getListPlayers().forEach((player) -> {
-            if(!Objects.equals(player.getPlayer().playerId(), playerId)) nextPlayer.set(player.getPlayer().playerId());
+            if(!Objects.equals(player.getPlayerId(), playerId)) nextPlayer.set(player.getPlayerId());
         });
         return nextPlayer.get();
     }
@@ -56,7 +56,7 @@ public class GameMatch implements Serializable {
     public PlayerInMatch getPlayerInListPlayersById(String playerId){
         AtomicReference<PlayerInMatch> playerInList = new AtomicReference<>();
         getListPlayers().forEach((player) -> {
-            if(Objects.equals(player.getPlayer().playerId(), playerId)) playerInList.set(player);
+            if(Objects.equals(player.getPlayerId(), playerId)) playerInList.set(player);
         });
         return playerInList.get();
     }

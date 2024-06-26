@@ -2,9 +2,7 @@ package src.main.jogo.services;
 
 import src.main.jogo.models.*;
 import src.main.jogo.net.ClientHandler;
-import src.main.jogo.net.packets.ClientPacket;
-import src.main.jogo.net.packets.SendGameBoardPacket;
-import src.main.jogo.net.packets.SendStartingGameMatchPacket;
+import src.main.jogo.net.packets.*;
 import src.main.jogo.views.GameManagerView;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -16,7 +14,6 @@ public class GameManagerService {
     private final ArrayList<GameMatch> listGameMatches;
     private final GameManagerView gameManagerView;
     private final GameBoardService gameBoardService;
-
     private final GameVerifyBoardService gameVerifyBoardService;
 
     public GameManagerService(){
@@ -26,6 +23,7 @@ public class GameManagerService {
         this.gameManagerView = new GameManagerView();
         this.gameBoardService = new GameBoardService();
         this.gameVerifyBoardService = new GameVerifyBoardService();
+
     }
     public void setGameRoomsInList(GameRoom gameRoom) {
         this.listGameRooms.add(gameRoom);
@@ -36,7 +34,7 @@ public class GameManagerService {
     public AtomicReference<Player> getGuestPlayerById(String guestPlayerId){
         AtomicReference<Player> guestPlayer = new AtomicReference<>();
         guestPlayers.forEach((player) -> {
-            if(player.playerId().equals(guestPlayerId)){
+            if(player.getPlayerId().equals(guestPlayerId)){
                 guestPlayer.set(player);
             }
         } );
@@ -90,8 +88,8 @@ public class GameManagerService {
         gameBoardService.create(gameMatch.getGameBoard());
         AtomicReference<Player> hostPlayer = getGuestPlayerById(gameRoom.getHostId());
         AtomicReference<Player> guestPlayer = getGuestPlayerById(guestPlayerId);
-        gameMatch.setPlayerInListPlayers(new PlayerInMatch(hostPlayer.get()));
-        gameMatch.setPlayerInListPlayers(new PlayerInMatch(guestPlayer.get()));
+        gameMatch.setPlayerInListPlayers(new PlayerInMatch(hostPlayer.get().getPlayerId(), hostPlayer.get().getPlayerName()));
+        gameMatch.setPlayerInListPlayers(new PlayerInMatch(guestPlayer.get().getPlayerId(), guestPlayer.get().getPlayerName()));
         listGameMatches.add(gameMatch);
         return gameMatch;
     }
@@ -106,7 +104,7 @@ public class GameManagerService {
         ArrayList<PlayerInMatch> listPlayers = gameMatch.getListPlayers();
         listPlayers.forEach((player) -> {
             clientHandlers.forEach((clientHandler) -> {
-                if(Objects.equals(clientHandler.getClientId(), player.getPlayer().playerId())){
+                if(Objects.equals(clientHandler.getClientId(), player.getPlayerId())){
                     clientHandler.sendPacket(new SendGameBoardPacket(gameMatch.getGameBoard()));
                 }
 
@@ -115,7 +113,7 @@ public class GameManagerService {
 
     }
 
-    public String handleVerifyBoard(GameMatch gameMatchUpdated, String XO, String playerName) {
+    public String verifyGameBoard(GameMatch gameMatchUpdated, String XO, String playerName) {
         if(!gameVerifyBoardService.naHorizontal(XO, gameMatchUpdated.getGameBoard().getGameBoard(), playerName).isEmpty()){
             return gameVerifyBoardService.naHorizontal(XO, gameMatchUpdated.getGameBoard().getGameBoard(), playerName);
         }
@@ -143,13 +141,16 @@ public class GameManagerService {
     }
 
 
-    public void teste(GameRoom gameRoom, String playerId) {
-        if(gameRoom == null || gameRoom.getIsClosed()) {
-            return;
-        }
-        GameMatch gameMatch = handleStartingGameMatch(gameRoom, playerId);
-        gameMatch.getListPlayers().forEach((player) -> {
-            //sendUpdateByClientHandlerId(player.getPlayer().playerId(), new SendStartingGameMatchPacket(gameMatch));
-        });
+    public String handleVerifyGameBoard(GameMatch gameMatch, PlayerInMatch playerInMatch) {
+        String verifyGameBoard = verifyGameBoard(gameMatch, playerInMatch.getXO(), playerInMatch.getPlayerName());
+        if(verifyGameBoard != null && !verifyGameBoard.isEmpty()) gameMatch.setClosed(true);
+        return verifyGameBoard;
+    }
+
+    public GameMatch getGameMatchUpdated(GameMatch gameMatch, PlayerInMatch playerInMatch, String position) {
+        String codeRoom = gameMatch.getGameRoom().getCodeRoom();
+        getGameMatchInList(codeRoom).getPlayerInListPlayersById(playerInMatch.getPlayerId()).setXO(playerInMatch.getXO());
+
+        return handleUpdateGameMatch(codeRoom, position, playerInMatch.getXO());
     }
 }

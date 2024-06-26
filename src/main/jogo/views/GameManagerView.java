@@ -6,6 +6,8 @@ import src.main.jogo.models.Player;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import static java.lang.StringTemplate.STR;
+
 public class GameManagerView {
     GameManagerController gameManagerController = new GameManagerController();
     Scanner scanner = new Scanner(System.in);
@@ -16,8 +18,8 @@ public class GameManagerView {
     public void receiveGuestPlayerConnected(Player guestPlayer){
         System.out.println("------------------------------------------");
         System.out.println("Recebendo dados de um Player...");
-        System.out.println(STR."Player ID: \{guestPlayer.playerId()}");
-        System.out.println(STR."PlayerTag: \{guestPlayer.playerName()}");
+        System.out.println(STR."Player ID: \{guestPlayer.getPlayerId()}");
+        System.out.println(STR."PlayerTag: \{guestPlayer.getPlayerName()}");
         System.out.println("--------------------------------------------");
     }
     public void showListGuestPlayersConnected(ArrayList<Player> guestPlayers){
@@ -26,9 +28,9 @@ public class GameManagerView {
         if(guestPlayers.isEmpty()){
             System.out.println("Sem Player conectados!");
         }
-        guestPlayers.forEach((guest) -> {
-            System.out.println(STR."PlayerId: \{guest.playerId()}");
-            System.out.println(STR."PlayerName: \{guest.playerName()}");
+        guestPlayers.forEach((guestPlayer) -> {
+            System.out.println(STR."PlayerId: \{guestPlayer.getPlayerId()}");
+            System.out.println(STR."PlayerName: \{guestPlayer.getPlayerName()}");
             System.out.println("--------------------------------------------");
         });
         System.out.println("Dados dos Jogadores recebido com sucesso!!");
