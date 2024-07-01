@@ -7,6 +7,7 @@ import java.net.Socket;
 import src.main.jogo.net.packets.ClientPacket;
 import src.main.jogo.net.packets.SendDisconnectPacket;
 import src.main.jogo.net.packets.SendClientPacket;
+import src.main.jogo.services.ExecutorSendPacketService;
 
 public class ClientHandler implements Runnable {
     private boolean isConnected;
@@ -15,11 +16,13 @@ public class ClientHandler implements Runnable {
     private final Socket socket;
     private ObjectOutputStream outputStream;
     private ObjectInputStream inputStream;
+    private final ExecutorSendPacketService executorSendPacketService;
     public String getClientId() {
         return clientId;
     }
 
-    public ClientHandler(final Server server, final Socket socket) {
+    public ClientHandler(final Server server, final Socket socket, ExecutorSendPacketService executorSendPacketService) {
+        this.executorSendPacketService = executorSendPacketService;
         this.server = server;
         this.socket = socket;
         try {
@@ -52,7 +55,7 @@ public class ClientHandler implements Runnable {
         while (isConnected) {
             try {
                 final ClientPacket packet = (ClientPacket) inputStream.readObject();
-                server.processPacket(this, packet);
+                executorSendPacketService.processPacket(this, server.getClientHandlers(), packet);
             } catch (final ClassNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {

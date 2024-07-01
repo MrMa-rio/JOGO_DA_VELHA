@@ -4,33 +4,26 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Objects;
-import src.main.jogo.models.GameMatch;
-import src.main.jogo.models.GameRoom;
-import src.main.jogo.models.Player;
-import src.main.jogo.models.PlayerInMatch;
+
 import src.main.jogo.net.packets.*;
 import src.main.jogo.services.GameClientManagerService;
-import src.main.jogo.services.GameManagerService;
-import src.main.jogo.views.GameManagerView;
+import src.main.jogo.services.ExecutorSendPacketService;
 
 public class Server implements Runnable {
     public final static int DEFAULT_PORT_NUMBER = 1234;
     private ServerSocket serverSocket;
     private final ArrayList<ClientHandler> clientHandlers;
-    private final GameManagerService gameManagerService;
     private final GameClientManagerService gameClientManagerService;
-    private final GameManagerView gameManagerView;
+    private final ExecutorSendPacketService executorSendPacketService;
     public Server(final int port) {
         try {
             this.serverSocket = new ServerSocket(port);
         } catch (final IOException e) {
             e.printStackTrace();
         }
-        this.gameManagerService = new GameManagerService();
-        this.gameClientManagerService = new GameClientManagerService(this, gameManagerService);
-        this.gameManagerView = new GameManagerView();
+        this.executorSendPacketService = new ExecutorSendPacketService();
         clientHandlers = new ArrayList<>();
+        this.gameClientManagerService = new GameClientManagerService(clientHandlers);
     }
 
     public ArrayList<ClientHandler> getClientHandlers() {
@@ -48,14 +41,13 @@ public class Server implements Runnable {
             try {
                 final Socket socket = serverSocket.accept();
                 System.out.println("UM JOGADOR SE CONECTOU");
-                final ClientHandler clientHandler = new ClientHandler(this, socket);
+                final ClientHandler clientHandler = new ClientHandler(this, socket, executorSendPacketService);
                 clientHandlers.add(clientHandler);
                 Thread clientThread = new Thread(clientHandler); //
                 clientThread.start();
                 gameClientManagerService.sendUpdateForOthers(clientHandler, new SendMessagePacket("UM NOVO PLAYER SE CONECTOU"));
             } catch (final IOException e) {
                 System.out.println(e.getMessage());
-                e.printStackTrace();
                 break;
             }
         }
@@ -73,8 +65,6 @@ public class Server implements Runnable {
             lastTickTime = System.nanoTime();
         }
     }
-
-
     public void closeServer() {
         try {
             serverSocket.close();
