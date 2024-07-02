@@ -8,7 +8,6 @@ public class GameVerifyBoardService {
             if(Objects.equals(XO, tabuleiro[0][i])){
                 if(Objects.equals(XO, tabuleiro[1][i])){
                     if(Objects.equals(XO, tabuleiro[2][i])){
-
                         return String.format("O player %s ganhou na vertical", playerName);
                     }
                 }

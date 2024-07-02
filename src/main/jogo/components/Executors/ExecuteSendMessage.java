@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class ExecuteSendMessage implements IExecuteSendCommand {
 
-    GameClientManagerService gameClientManagerService;
+    private final GameClientManagerService gameClientManagerService;
 
     public ExecuteSendMessage(ClientHandler clientHandler, ArrayList<ClientHandler> clientHandlers, ClientPacket packet) {
         this.gameClientManagerService = new GameClientManagerService(clientHandlers);

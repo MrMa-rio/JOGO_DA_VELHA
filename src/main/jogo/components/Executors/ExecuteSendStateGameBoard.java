@@ -13,7 +13,7 @@ import src.main.jogo.components.IExecuteSendCommand;
 import java.util.ArrayList;
 
 public class ExecuteSendStateGameBoard implements IExecuteSendCommand {
-    GameClientManagerService gameClientManagerService;
+    private final GameClientManagerService gameClientManagerService;
     public ExecuteSendStateGameBoard(ArrayList<ClientHandler> clientHandlers, ClientPacket packet, GameManagerService gameManagerService) {
         this.gameClientManagerService = new GameClientManagerService(clientHandlers);
         System.out.println("Recebendo estado do tabuleiro...");

@@ -8,15 +8,16 @@ import src.main.jogo.services.GameManagerService;
 import src.main.jogo.components.IExecuteSendCommand;
 
 public class ExecuteSendPlayer implements IExecuteSendCommand {
-    GameManagerService gameManagerService;
+    private final GameManagerService gameManagerService;
+
     public ExecuteSendPlayer(ClientHandler clientHandler, GameManagerService gameManagerService, ClientPacket packet) {
         this.gameManagerService = gameManagerService;
-        try{
-                Player player = ((SendPlayerPacket) packet).getPlayer();
-                gameManagerService.setGuestPlayersInList(player);
-                gameManagerService.showListGuestPlayers();
-            } catch (Exception e){
-                throw new RuntimeException(e);
-            }
+        try {
+            Player player = ((SendPlayerPacket) packet).getPlayer();
+            gameManagerService.setGuestPlayersInList(player);
+            gameManagerService.showListGuestPlayers();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

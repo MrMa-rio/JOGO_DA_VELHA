@@ -9,7 +9,7 @@ import src.main.jogo.components.IExecuteSendCommand;
 import java.util.ArrayList;
 
 public class ExecuteGetGameRooms implements IExecuteSendCommand {
-    GameClientManagerService gameClientManagerService;
+    private final GameClientManagerService gameClientManagerService;
     public ExecuteGetGameRooms(ClientHandler clientHandler, ArrayList<ClientHandler> clientHandlers, GameManagerService gameManagerService) {
         this.gameClientManagerService = new GameClientManagerService(clientHandlers);
         gameClientManagerService.sendUpdates(clientHandler, new SendGetGameRoomsPacket(gameManagerService.getListGameRooms()));

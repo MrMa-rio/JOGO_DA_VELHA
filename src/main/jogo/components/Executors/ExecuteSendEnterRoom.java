@@ -15,8 +15,8 @@ import src.main.jogo.views.GameManagerView;
 import java.util.ArrayList;
 
 public class ExecuteSendEnterRoom implements IExecuteSendCommand {
-    GameManagerView gameManagerView;
-    GameClientManagerService gameClientManagerService;
+    private final GameManagerView gameManagerView;
+    private final GameClientManagerService gameClientManagerService;
     public ExecuteSendEnterRoom(
             ClientHandler clientHandler,
             ArrayList<ClientHandler> clientHandlers,

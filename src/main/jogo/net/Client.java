@@ -72,14 +72,14 @@ public class Client implements Runnable {
                 } catch (InterruptedException ex) {
                     throw new RuntimeException(ex);
                 }
-                ClientPacket clientPacket = null;
+                ClientPacket clientPacket;
                 try {
                     clientPacket = (ClientPacket) inputStream.readObject();
                 } catch (IOException | ClassNotFoundException ex) {
                     System.out.println(ex.getMessage() + "EITA");
                     throw new RuntimeException(ex);
                 }
-                processPacket(clientPacket); //Pode dar muito errado, foi analisado que as vezes o tick de leitura se esbarra com o tick de outro cliente gerando o erro stream active
+                processPacket(clientPacket);
                 throw new RuntimeException(e);
             }
         }

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class ExecuteSendCloseGameRoom implements IExecuteSendCommand {
 
-    GameClientManagerService gameClientManagerService;
+    private final GameClientManagerService gameClientManagerService;
 
     public ExecuteSendCloseGameRoom(ClientHandler clientHandler, ArrayList<ClientHandler> clientHandlers, ClientPacket packet, GameManagerService gameManagerService) {
         this.gameClientManagerService = new GameClientManagerService(clientHandlers);

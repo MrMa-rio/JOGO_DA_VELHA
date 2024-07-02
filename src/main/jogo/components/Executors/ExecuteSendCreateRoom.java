@@ -12,8 +12,8 @@ import src.main.jogo.views.GameManagerView;
 import java.util.ArrayList;
 
 public class ExecuteSendCreateRoom implements IExecuteSendCommand {
-    GameManagerView gameManagerView;
-    GameClientManagerService gameClientManagerService;
+    private final GameManagerView gameManagerView;
+    private final GameClientManagerService gameClientManagerService;
 
     public ExecuteSendCreateRoom(ClientHandler clientHandler, ArrayList<ClientHandler> clientHandlers, ClientPacket packet, GameManagerService gameManagerService) {
         this.gameClientManagerService = new GameClientManagerService(clientHandlers);

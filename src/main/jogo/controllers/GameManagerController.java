@@ -1,14 +1,10 @@
 package src.main.jogo.controllers;
 
-import src.main.jogo.services.GameModeOnlineService;
 import src.main.jogo.services.GamePlayerService;
-import src.main.jogo.views.GameModeOnlineView;
 
 public class GameManagerController {
 
     GamePlayerService gamePlayerService = new GamePlayerService();
-    GameModeOnlineView gameModeOnlineView = new GameModeOnlineView();
-
     public boolean handleGameModelSelected(int gameModeSelected) {
 
         switch (gameModeSelected){

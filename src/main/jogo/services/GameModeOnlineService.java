@@ -15,17 +15,18 @@ public class GameModeOnlineService {
     private static Client client;
     private Player player;
 
-    public GameModeOnlineService(){
+    public GameModeOnlineService() {
 
         this.gameModeOnlineView = new GameModeOnlineView();
         this.gameRoom = new GameRoom();
     }
-    public boolean initializeClient(){
-        try{
+
+    public boolean initializeClient() {
+        try {
             client = new Client();
             client.run();
             return true;
-        }catch (RuntimeException e){
+        } catch (RuntimeException e) {
             return false;
         }
     }
@@ -38,26 +39,28 @@ public class GameModeOnlineService {
         return gameRoom;
     }
 
-    public void createPlayer(){
-        if(player == null){
+    public void createPlayer() {
+        if (player == null) {
             String playerName = gameModeOnlineView.setPlayerName();
             String playerId = client.getClientId();
             this.player = new Player(playerId, playerName);
             client.sendPacket(new SendPlayerPacket(player));
         }
     }
-    public void setGameRoom(String codeRoom, String hostId){
+
+    public void setGameRoom(String codeRoom, String hostId) {
         this.gameRoom.setCodeRoom(codeRoom);
         this.gameRoom.setHostId(hostId);
     }
 
-    public void createRoom(){
+    public void createRoom() {
         setGameRoom(RandomStringGenerator.random(), client.getClientId());
         client.sendPacket(new SendCreateRoomPacket(gameRoom));
         System.out.println("O codigo da sala e: " + gameRoom.getCodeRoom());
         System.out.println("Aguardando jogador se conectar nessa sala...");
     }
-    public void enterRoom(){
+
+    public void enterRoom() {
         String codeRoom = gameModeOnlineView.setCodeRoom();
         client.sendPacket(new SendEnterRoomPacket(codeRoom));
     }

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 public class ExecuteSendStartedGameMatch implements IExecuteSendCommand {
     GameClientManagerService gameClientManagerService;
+
     public ExecuteSendStartedGameMatch(ArrayList<ClientHandler> clientHandlers, ClientPacket packet, GameManagerService gameManagerService) {
         this.gameClientManagerService = new GameClientManagerService(clientHandlers);
         GameMatch gameMatch = ((SendStartedGameMatchPacket) packet).getGameMatch();
